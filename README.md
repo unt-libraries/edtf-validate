@@ -56,8 +56,8 @@ Acknowledgements
 
 The Extended Date Time Format was developed at the UNT Libraries and has been worked on by a number of developers over the years including
 
-Joey Liechty
-Lauren Ko
-Mark Phillips
+Joey Liechty  
+Lauren Ko  
+Mark Phillips  
 
 If you have questions about the project feel free to contact Mark Phillips at mark.phillips@unt.edu
