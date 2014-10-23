@@ -56,7 +56,7 @@ Acknowledgements
 
 The Extended Date Time Format was developed at the UNT Libraries and has been worked on by a number of developers over the years including
 
-Joey Liechty  
+[Joey Liechty](https://github.com/yeahdef) 
 Lauren Ko  
 Mark Phillips  
 
