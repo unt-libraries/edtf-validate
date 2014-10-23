@@ -44,3 +44,20 @@ You need these packages for edtf to work, installing via setup should take care 
 1. pyparsing
 2. argparse
 3. datetime
+
+License
+-------
+
+See LICENSE.txt
+
+
+Acknowledgements
+----------------
+
+The Extended Date Time Format was developed at the UNT Libraries and has been worked on by a number of developers over the years including
+
+Joey Liechty
+Lauren Ko
+Mark Phillips
+
+If you have questions about the project feel free to contact Mark Phillips at mark.phillips@unt.edu
