@@ -6,8 +6,8 @@ from setuptools import setup
 setup(
     name='ExtendedDateTimeFormat',
     version='0.1.0',
-    author='Joseph Liechty',
-    author_email='joeyliechty@gmail.com',
+    author='Mark Phillips',
+    author_email='mark.phillips@unt.edu',
     packages=['ExtendedDateTimeFormat'],
     url='http://pypi.python.org/pypi/ExtendedDateTimeFormat/',
     license='LICENSE.txt',
