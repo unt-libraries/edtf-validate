@@ -23,8 +23,16 @@ Or run it in the interpreter...
 
 Or just straight from the commandline...
 
-    shabadoo@buntu:~/edtf$ python edtf_validate/valid_edtf.py '1234'
-    1234	True
+    shabadoo@buntu:~/edtf$ edtf-validate 2015
+    2015	True
+
+NOTE
+----
+
+Please take special care to note the name difference between command-line usage and the other usage cases:
+
+* When importing into python, use an underscore separator, e.g. `import edtf_validate`.
+* When using the command-line (or when talking about the package name), use a dash separator, e.g. `$ edtf-validate`.
 
 What exactly does edtf-validate do?
 ===============================================
@@ -37,10 +45,19 @@ This program will:
 
 If you're confused what exactly the different levels of EDTF validation implicate, you can read about it in exhaustive detail [here](http://www.loc.gov/standards/datetime/pre-submission.html).
 
+
+Installation
+------------
+
+The easiest way to install is through pip. To use pip to install edtf-validate, along with all the dependencies, use:
+
+    $ pip install edtf-validate
+
+
 Dependencies
 ------------
 
-You need these packages for edtf-validate to work, installing via setup should take care of this for you.
+You need these packages for edtf-validate to work. Installing via setup or pip (as shown above) should take care of this for you.
 
 1. pyparsing
 2. argparse

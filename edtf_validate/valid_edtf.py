@@ -418,7 +418,7 @@ def is_valid(edtf_candidate):
         return False
 
 
-if __name__ == "__main__":
+def main():
     # setup the argument parser to accept the edtf candidate identifier
     parser = argparse.ArgumentParser(description='edtf compliance.')
     parser.add_argument('edtf', type=str, help='edtf candidate')
