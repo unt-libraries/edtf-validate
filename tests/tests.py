@@ -1,5 +1,5 @@
 import unittest
-from ExtendedDateTimeFormat import valid_edtf
+from edtf_validate import valid_edtf
 
 
 class isValidBadInput(unittest.TestCase):

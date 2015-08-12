@@ -1,20 +1,21 @@
 =========================
-Extended Date Time Format
+edtf-validate
 =========================
 
-Valid EDTF provides validity testing against EDTF levels 1-3. You might find it most useful for tasks involving date validation and comparison. Typical usage often looks like this:
+Valid EDTF provides validity testing against [EDTF](http://www.loc.gov/standards/datetime/pre-submission.html)
+levels 1-3. You might find it most useful for tasks involving date validation and comparison. Typical usage often looks like this:
 
 Import edtf into your own programs...
 
     #!/usr/bin/env python
-    from ExtendedDateTimeFormat.valid_edtf import isLevel1
+    from edtf_validate.valid_edtf import isLevel1
     if isLevel1(edtf_candidate):
         print "The date, %s, is level 1 edtf validated" % edtf_candidate
 
 Or run it in the interpreter...
     
-    >>> import ExtendedDateTimeFormat
-    >>> from ExtendedDateTimeFormat.valid_edtf import is_valid
+    >>> import edtf_validate
+    >>> from edtf_validate.valid_edtf import is_valid
     >>> is_valid('1985')
     True
     >>> is_valid('Two Thousand Fourteen, The Year of Our Lord')
@@ -22,10 +23,10 @@ Or run it in the interpreter...
 
 Or just straight from the commandline...
 
-    shabadoo@buntu:~/edtf$ python ExtendedDateTimeFormat/valid_edtf.py '1234'
+    shabadoo@buntu:~/edtf$ python edtf_validate/valid_edtf.py '1234'
     1234	True
 
-What exactly does Extended Date Time Format do?
+What exactly does edtf-validate do?
 ===============================================
 
 This program will:
@@ -39,7 +40,7 @@ If you're confused what exactly the different levels of EDTF validation implicat
 Dependencies
 ------------
 
-You need these packages for edtf to work, installing via setup should take care of this for you.
+You need these packages for edtf-validate to work, installing via setup should take care of this for you.
 
 1. pyparsing
 2. argparse
@@ -54,7 +55,7 @@ See LICENSE.txt
 Acknowledgements
 ----------------
 
-The Extended Date Time Format was developed at the UNT Libraries and has been worked on by a number of developers over the years including
+The edtf-validate was developed at the UNT Libraries and has been worked on by a number of developers over the years including
 
 [Joey Liechty](https://github.com/yeahdef)
 
