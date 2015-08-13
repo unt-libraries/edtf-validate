@@ -1,4 +1,3 @@
-=========================
 edtf-validate
 =========================
 
@@ -7,24 +6,18 @@ levels 1-3. You might find it most useful for tasks involving date validation an
 
 Import edtf into your own programs...
 
-    #!/usr/bin/env python
-    from edtf_validate.valid_edtf import isLevel1
-    if isLevel1(edtf_candidate):
-        print "The date, %s, is level 1 edtf validated" % edtf_candidate
-
-Or run it in the interpreter...
-    
-    >>> import edtf_validate
-    >>> from edtf_validate.valid_edtf import is_valid
-    >>> is_valid('1985')
-    True
-    >>> is_valid('Two Thousand Fourteen, The Year of Our Lord')
-    False
+```python
+from edtf_validate.valid_edtf import isLevel1
+if isLevel1(edtf_candidate):
+    print "The date, %s, is level 1 edtf validated" % edtf_candidate
+```
 
 Or just straight from the commandline...
 
-    shabadoo@buntu:~/edtf$ edtf-validate 2015
-    2015	True
+```console
+$ edtf-validate 2015
+2015	True
+```
 
 NOTE
 ----
@@ -51,17 +44,10 @@ Installation
 
 The easiest way to install is through pip. To use pip to install edtf-validate, along with all the dependencies, use:
 
-    $ pip install edtf-validate
+```console
+$ pip install edtf-validate
+```
 
-
-Dependencies
-------------
-
-You need these packages for edtf-validate to work. Installing via setup or pip (as shown above) should take care of this for you.
-
-1. pyparsing
-2. argparse
-3. datetime
 
 License
 -------
