@@ -7,9 +7,13 @@ levels 1-3. You might find it most useful for tasks involving date validation an
 Import edtf into your own programs...
 
 ```python
-from edtf_validate.valid_edtf import isLevel1
-if isLevel1(edtf_candidate):
-    print "The date, %s, is level 1 edtf validated" % edtf_candidate
+>>> from edtf_validate.valid_edtf import is_valid, isLevel2
+>>> is_valid('2015-03-05')
+True
+>>> is_valid('Jan 12, 1990')
+False
+>>> isLevel2('1998?-12-23')
+True
 ```
 
 Or just straight from the commandline...
