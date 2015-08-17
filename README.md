@@ -4,8 +4,6 @@ edtf-validate
 Valid EDTF provides validity testing against [EDTF](http://www.loc.gov/standards/datetime/pre-submission.html)
 levels 1-3. You might find it most useful for tasks involving date validation and comparison. Typical usage often looks like this:
 
-Import edtf into your own programs...
-
 ```python
 >>> from edtf_validate.valid_edtf import is_valid, isLevel2
 >>> is_valid('2015-03-05')
