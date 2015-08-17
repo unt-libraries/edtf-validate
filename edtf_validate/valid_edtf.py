@@ -424,3 +424,6 @@ def main():
     parser.add_argument('edtf', type=str, help='edtf candidate')
     args = parser.parse_args()
     print args.edtf + '\t' + str(is_valid(args.edtf))
+
+if __name__ == '__main__':
+    main()
