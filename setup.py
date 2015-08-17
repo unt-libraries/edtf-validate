@@ -4,18 +4,27 @@ from setuptools import setup
 
 
 setup(
-    name='ExtendedDateTimeFormat',
-    version='0.1.0',
+    name='edtf-validate',
+    version='1.0.0',
     author='Mark Phillips',
     author_email='mark.phillips@unt.edu',
-    packages=['ExtendedDateTimeFormat'],
-    url='http://pypi.python.org/pypi/ExtendedDateTimeFormat/',
-    license='LICENSE.txt',
+    packages=['edtf_validate'],
+    url='https://github.com/unt-libraries/edtf-validate',
+    license='BSD',
+    entry_points = {
+        'console_scripts': ['edtf-validate=edtf_validate.valid_edtf:main'],
+    },
     description='Extended Date Time Format Validation',
-    long_description=open('README.md').read(),
+    long_description='See the home page for more information.',
     install_requires=[
         "pyparsing",
         "argparse",
         "datetime",
     ],
+    keywords=['edtf', 'extended', 'datetime', 'validate'],
+    classifiers=[
+        'Natural Language :: English',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 2.7',
+    ]
 )
