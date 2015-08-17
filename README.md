@@ -34,8 +34,8 @@ What exactly does edtf-validate do?
 
 This program will:
 
-* Determine if a string is valid edtf according to the specifications provided by the Library of Congress
-* Allow the user to test each level of edtf.
+* Determine if a string is valid edtf according to the specifications provided by the Library of Congress.
+* Allow the user to test each level of edtf.  
   ie. '2014' is valid according to level 0 rules, but '1984?' is only valid against level 1.
 
 If you're confused what exactly the different levels of EDTF validation implicate, you can read about it in exhaustive detail [here](http://www.loc.gov/standards/datetime/pre-submission.html).
@@ -60,7 +60,7 @@ See LICENSE.txt
 Acknowledgements
 ----------------
 
-The edtf-validate was developed at the UNT Libraries and has been worked on by a number of developers over the years including
+The edtf-validate was developed at the UNT Libraries and has been worked on by a number of developers over the years including:
 
 [Joey Liechty](https://github.com/yeahdef)
 
@@ -68,4 +68,4 @@ Lauren Ko
 
 Mark Phillips  
 
-If you have questions about the project feel free to contact Mark Phillips at mark.phillips@unt.edu
+If you have questions about the project feel free to contact Mark Phillips at mark.phillips@unt.edu.
