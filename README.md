@@ -14,7 +14,7 @@ False
 True
 ```
 
-Or just straight from the commandline...
+Or just straight from the command line...
 
 ```console
 $ edtf-validate 2015
@@ -24,10 +24,10 @@ $ edtf-validate 2015
 NOTE
 ----
 
-Please take special care to note the name difference between command-line usage and the other usage cases:
+Please take special care to note the name difference between command line usage and the other usage cases:
 
 * When importing into python, use an underscore separator, e.g. `import edtf_validate`.
-* When using the command-line (or when talking about the package name), use a dash separator, e.g. `$ edtf-validate`.
+* When using the command line (or when talking about the package name), use a dash separator, e.g. `$ edtf-validate`.
 
 What exactly does edtf-validate do?
 ===============================================
