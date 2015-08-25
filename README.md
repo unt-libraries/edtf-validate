@@ -1,5 +1,6 @@
 edtf-validate
 =========================
+[![PyPI](https://img.shields.io/pypi/v/edtf-validate.svg)](https://pypi.python.org/pypi/edtf-validate)
 
 Valid EDTF provides validity testing against [EDTF](http://www.loc.gov/standards/datetime/pre-submission.html)
 levels 1-3. You might find it most useful for tasks involving date validation and comparison. Typical usage often looks like this:
