@@ -66,8 +66,10 @@ The edtf-validate was developed at the UNT Libraries and has been worked on by a
 
 [Joey Liechty](https://github.com/yeahdef)
 
-Lauren Ko  
+[Lauren Ko](https://github.com/ldko) 
 
-Mark Phillips  
+[Mark Phillips](https://github.com/vphill)
+
+[Gio Gottardi](https://github.com/somexpert)
 
 If you have questions about the project feel free to contact Mark Phillips at mark.phillips@unt.edu.
