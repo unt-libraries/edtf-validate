@@ -6,9 +6,12 @@ given input complies with extended date time format level 0, 1, and 2
 Information about the extended date time format standard can be found here:
 http://www.loc.gov/standards/datetime/pre-submission.html
 """
-from pyparsing import Optional, oneOf, OneOrMore, ZeroOrMore, Word, alphas
 import argparse
+import calendar
 import datetime
+import re
+
+from pyparsing import Optional, oneOf, OneOrMore, ZeroOrMore, Word, alphas
 """
 ------------------------------------------------------------------------------
 LEVEL 0 GRAMMAR START
@@ -230,7 +233,6 @@ dateTimeString = level2Expression | level1Expression | level0Expression
 interval_replacements = {
     '~': '',
     '?': '',
-    'uu': '01',
 }
 
 
@@ -240,6 +242,110 @@ def replace_all(text, dic):
     for i, j in dic.iteritems():
         text = text.replace(i, j)
     return text
+
+
+U_PATTERN = re.compile(r'(-?)([\du]{4})(-[\du]{2})?(-[\du]{2})?/'
+                        '(-?)([\du]{4})(-[\du]{2})?(-[\du]{2})?')
+
+
+def replace_u_start_month(month):
+    """Find the earliest legitimate month."""
+    month = month.lstrip('-')
+    if month == 'uu' or month == '0u':
+        return '01'
+    if month == '1u' or 'u0':
+        return '10'
+    return month.replace('u', '0')
+
+
+def replace_u_end_month(month):
+    """Find the latest legitimate month."""
+    month = month.lstrip('-')
+    if month == 'uu' or month == '1u':
+        return '12'
+    if month == 'u0':
+        return '10'
+    if month == '0u':
+        return '09'
+    if month[1] in ['1', '2']:
+        # 'u1' or 'u2'
+        return month.replace('u', '1')
+    # Otherwise it should match r'u[3-9]'.
+    return month.replace('u', '0')
+
+
+def replace_u_start_day(day):
+    """Find the earliest legitimate day."""
+    day = day.lstrip('-')
+    if day == 'uu' or day == '0u':
+        return '01'
+    if day == 'u0':
+        return '10'
+    return day.replace('u', '0')
+
+
+def replace_u_end_day(day, year, month):
+    """Find the latest legitimate day."""
+    day = day.lstrip('-')
+    year = int(year)
+    month = int(month.lstrip('-'))
+    if day == 'uu' or day == '3u':
+        # Use the last day of the month for a given year/month.
+        return str(calendar.monthrange(year, month)[1])
+    if day == '0u' or day == '1u':
+        return day.replace('u', '9')
+    if day == '2u' or 'u9':
+        if month != '02' or calendar.isleap(year):
+            return '29'
+        elif day == '2u':
+            # It is Feburary and not a leap year.
+            return '28'
+        else:
+            # It is February, not a leap year, day ends in 9.
+            return '19'
+    # 'u2' 'u3' 'u4' 'u5' 'u6' 'u7' 'u8'
+    if 1 < int(day[1]) < 9:
+        return day.replace('u', '2')
+    # 'u0' 'u1'
+    if day == 'u1':
+        if calendar.monthrange(year, month)[1] == 31:
+            # See if the month has a 31st.
+            return '31'
+        else:
+            return '21'
+    if day == 'u0':
+        if calendar.monthrange(year, month)[1] >= 30:
+            return '30'
+    else:
+        return '20'
+
+
+def replace_u(matchobj):
+    """Break the interval into parts, and replace 'u's.
+
+    pieces - [pos/neg, start_year, start_month, start_day,
+              pos/neg, end_year, end_month, end_day]
+    """
+    pieces = list(matchobj.groups(''))
+    # Replace "u"s in start and end years.
+    if 'u' in pieces[1]:
+        pieces[1] = pieces[1].replace('u', '0')
+    if 'u' in pieces[5]:
+        pieces[5] = pieces[5].replace('u', '9')
+    # Replace "u"s in start month.
+    if 'u' in pieces[2]:
+        pieces[2] = '-' + replace_u_start_month(pieces[2])
+    # Replace "u"s in end month.
+    if 'u' in pieces[6]:
+        pieces[6] = '-' + replace_u_end_month(pieces[6])
+    # Replace "u"s in start day.
+    if 'u' in pieces[3]:
+        pieces[3] = '-' + replace_u_start_day(pieces[3])
+    # Replace "u"s in end day.
+    if 'u' in pieces[7]:
+        pieces[7] = '-' + replace_u_end_day(pieces[7], year=pieces[5],
+                                            month=pieces[6])
+    return ''.join((''.join(pieces[:4]), '/', ''.join(pieces[4:])))
 
 
 def zero_year_special_case(from_date, to_date, start, end):
@@ -308,7 +414,9 @@ def is_valid_interval(edtf_candidate):
     if edtf_candidate.count('/') == 1:
         # replace all 'problem' cases (unspecified, 0000 date, ?~, -, y)
         # break the interval into two date strings
-        parts = replace_all(edtf_candidate, interval_replacements).split('/')
+        edtf_candidate = replace_all(edtf_candidate, interval_replacements)
+        edtf_candidate = re.sub(U_PATTERN, replace_u, edtf_candidate)
+        parts = edtf_candidate.split('/')
         # set flag for negative start date
         if parts[0].startswith("-"):
             start = 'neg'

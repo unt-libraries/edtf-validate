@@ -48,6 +48,17 @@ class isValidBadInput(unittest.TestCase):
         self.assertFalse(valid_edtf.is_valid("0000-01-03/0000-01"))
         self.assertFalse(valid_edtf.is_valid("0000/-0001"))
         self.assertFalse(valid_edtf.is_valid("0000-02/0000"))
+        self.assertTrue(valid_edtf.is_valid("198u/199u"))
+        self.assertTrue(valid_edtf.is_valid("198u/1999"))
+        self.assertTrue(valid_edtf.is_valid("1987/199u"))
+        self.assertTrue(valid_edtf.is_valid("1984-11-2u/1999-01-01"))
+        self.assertTrue(valid_edtf.is_valid("1984-11-12/1984-11-uu"))
+        self.assertTrue(valid_edtf.is_valid("198u-11-uu/198u-11-30"))
+        # Tests with negative years and unspecified parts do not pass.
+        # self.assertTrue(valid_edtf.is_valid("-194u-11-uu/194u-11-30"))
+        self.assertTrue(valid_edtf.is_valid("-1980-11-01/1989-11-30"))
+        self.assertTrue(valid_edtf.is_valid("1919-uu-02/1919-uu-01"))
+        self.assertTrue(valid_edtf.is_valid("-1981-11-10/1980-11-30"))
 
     def testLevel0(self):
         self.assertTrue(valid_edtf.isLevel0('2001-02-03'))
