@@ -137,7 +137,7 @@ yearWithU = (
 )
 monthWithU = "u" + digitOrU | "0u" | "1u"
 oneThru3 = oneOf("1 2 3")
-dayWithU = "u" + digitOrU | oneThru3 + "u"
+dayWithU = "u" + digitOrU | oneThru3 + "u" | "0u"
 monthDayWithU = (
     monthWithU + "-" + dayWithU |
     month + "-" + dayWithU |
