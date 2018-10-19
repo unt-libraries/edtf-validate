@@ -57,6 +57,8 @@ class isValidBadInput(unittest.TestCase):
         self.assertTrue(valid_edtf.is_valid("-1980-11-01/1989-11-30"))
         self.assertTrue(valid_edtf.is_valid("1919-uu-02/1919-uu-01"))
         self.assertTrue(valid_edtf.is_valid("-1981-11-10/1980-11-30"))
+        self.assertTrue(valid_edtf.is_valid("1930-u0-10/1930-10-30"))
+        self.assertTrue(valid_edtf.is_valid("1981-1u-10/1981-11-09"))
 
     def testLevel0(self):
         self.assertTrue(valid_edtf.isLevel0('2001-02-03'))

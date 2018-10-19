@@ -253,7 +253,7 @@ def replace_u_start_month(month):
     month = month.lstrip('-')
     if month == 'uu' or month == '0u':
         return '01'
-    if month == '1u' or 'u0':
+    if month == 'u0':
         return '10'
     return month.replace('u', '0')
 
