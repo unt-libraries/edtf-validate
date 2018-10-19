@@ -24,6 +24,7 @@ class isValidBadInput(unittest.TestCase):
         self.assertTrue(valid_edtf.is_valid("1000/2000"))
         self.assertTrue(valid_edtf.is_valid("unknown/2000"))
         self.assertTrue(valid_edtf.is_valid("unknown/open"))
+        self.assertTrue(valid_edtf.is_valid("2017-01-14/open"))
         self.assertTrue(valid_edtf.is_valid("0000/0000"))
         self.assertTrue(valid_edtf.is_valid("0000-02/1111"))
         self.assertTrue(valid_edtf.is_valid("0000-01/0000-01-03"))
@@ -129,6 +130,7 @@ class isValidBadInput(unittest.TestCase):
         self.assertTrue(valid_edtf.isLevel1('2003-22'))
         self.assertTrue(valid_edtf.isLevel1('2000-23'))
         self.assertTrue(valid_edtf.isLevel1('2010-24'))
+        self.assertFalse(valid_edtf.isLevel1('2013/2014'))
 
     def testLevel2(self):
         self.assertTrue(valid_edtf.isLevel2('2004?-06-11'))

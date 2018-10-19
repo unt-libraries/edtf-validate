@@ -86,9 +86,12 @@ unspecified = (
     yearWithOneOrTwoUnspecifedDigits
 )
 # L1Interval
-L1Start = dateOrSeason + UASymbol | dateOrSeason | "unknown"
-L1End = L1Start | "open"
-L1Interval = L1Start + "/" + L1End
+L1Interval = (
+    (dateOrSeason + UASymbol | dateOrSeason | "unknown") + "/" +
+    (dateOrSeason + UASymbol | "open" | "unknown" | season) |
+    (dateOrSeason + UASymbol | "unknown" | season) + "/" +
+    (dateOrSeason + UASymbol | dateOrSeason | "open" | "unknown")
+)
 # Long Year - Simple Form
 longYearSimple = (
     "y" + Optional("-") +
