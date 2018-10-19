@@ -54,8 +54,6 @@ class isValidBadInput(unittest.TestCase):
         self.assertTrue(valid_edtf.is_valid("1984-11-2u/1999-01-01"))
         self.assertTrue(valid_edtf.is_valid("1984-11-12/1984-11-uu"))
         self.assertTrue(valid_edtf.is_valid("198u-11-uu/198u-11-30"))
-        # Tests with negative years and unspecified parts do not pass.
-        # self.assertTrue(valid_edtf.is_valid("-194u-11-uu/194u-11-30"))
         self.assertTrue(valid_edtf.is_valid("-1980-11-01/1989-11-30"))
         self.assertTrue(valid_edtf.is_valid("1919-uu-02/1919-uu-01"))
         self.assertTrue(valid_edtf.is_valid("-1981-11-10/1980-11-30"))
