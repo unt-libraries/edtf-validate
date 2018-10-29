@@ -297,7 +297,7 @@ def replace_u_end_day(day, year, month):
         return str(calendar.monthrange(year, month)[1])
     if day == '0u' or day == '1u':
         return day.replace('u', '9')
-    if day == '2u' or 'u9':
+    if day == '2u' or day == 'u9':
         if month != '02' or calendar.isleap(year):
             return '29'
         elif day == '2u':
