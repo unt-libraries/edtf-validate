@@ -2,13 +2,13 @@ import unittest
 from edtf_validate import valid_edtf
 
 
-class isValidBadInput(unittest.TestCase):
+class TestisValidBadInput(unittest.TestCase):
 
-    def testIntervalMalformed(self):
+    def test_IntervalMalformed(self):
         # is_valid_interval should fail if not 8601 extended interval
         self.assertFalse(valid_edtf.is_valid_interval('2012/2011'))
 
-    def testEDTFDateTime(self):
+    def test_EDTFDateTime(self):
         # is_valid should fail if match doesn't exist
         self.assertFalse(valid_edtf.is_valid("2012-10-10T10:10:1"))
         self.assertFalse(valid_edtf.is_valid("2012-10-10T1:10:10"))
@@ -17,7 +17,7 @@ class isValidBadInput(unittest.TestCase):
         self.assertFalse(valid_edtf.is_valid("2012-10-10T10:10:10Z10"))
         self.assertTrue(valid_edtf.is_valid("2012-10-10T10:10:10Z"))
 
-    def testEDTFInterval(self):
+    def test_EDTFInterval(self):
         self.assertTrue(valid_edtf.is_valid("-1000/-0999"))
         self.assertTrue(valid_edtf.is_valid("-1000/-0090-10"))
         self.assertTrue(valid_edtf.is_valid("-1000/2000"))
@@ -79,7 +79,7 @@ class isValidBadInput(unittest.TestCase):
         self.assertTrue(valid_edtf.is_valid("2015-02-27/2015-02-u8"))
         self.assertTrue(valid_edtf.is_valid("2016-02-28/2016-02-u9"))
 
-    def testLevel0(self):
+    def test_Level0(self):
         self.assertTrue(valid_edtf.isLevel0('2001-02-03'))
         self.assertTrue(valid_edtf.isLevel0('2008-12'))
         self.assertTrue(valid_edtf.isLevel0('2008'))
@@ -104,7 +104,7 @@ class isValidBadInput(unittest.TestCase):
         self.assertFalse(valid_edtf.isLevel0("18 63-03-29"))
         self.assertFalse(valid_edtf.isLevel0("1863-0 3-29"))
 
-    def testLevel1(self):
+    def test_Level1(self):
         self.assertTrue(valid_edtf.isLevel1('1984?'))
         self.assertTrue(valid_edtf.isLevel1('2004-06?'))
         self.assertTrue(valid_edtf.isLevel1('2004-06-11?'))
@@ -133,7 +133,7 @@ class isValidBadInput(unittest.TestCase):
         self.assertTrue(valid_edtf.isLevel1('2010-24'))
         self.assertFalse(valid_edtf.isLevel1('2013/2014'))
 
-    def testLevel2(self):
+    def test_Level2(self):
         self.assertTrue(valid_edtf.isLevel2('2004?-06-11'))
         self.assertTrue(valid_edtf.isLevel2('2004-06~-11'))
         self.assertTrue(valid_edtf.isLevel2('2004-(06)?-11'))
@@ -169,7 +169,7 @@ class isValidBadInput(unittest.TestCase):
         self.assertFalse(valid_edtf.is_valid("1960-06-31"))
         self.assertFalse(valid_edtf.is_valid("[1 760-01, 1760-02, 1760-12..]"))
 
-    def testEDTFDateMatch(self):
+    def test_EDTFDateMatch(self):
         # is_valid should fail if match doesn't exist
         self.assertFalse(valid_edtf.is_valid("+20067890?~"))
         self.assertFalse(valid_edtf.is_valid("y2006"))
