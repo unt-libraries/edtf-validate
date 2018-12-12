@@ -17,6 +17,8 @@ class TestIsValid(object):
         '2012-10-10T10:1:10',
         '2012-10-10t10:10:10',
         '2012-10-10T10:10:10Z10',
+        '1960-06-31',
+        '[1 760-01, 1760-02, 1760-12..]',
     ])
     def test_invalid_edtf_datetime(self, date):
         # is_valid should fail if match doesn't exist
@@ -105,15 +107,6 @@ class TestIsValid(object):
     ])
     def test_invalid_edtf_date_match(self, date):
         # is_valid should fail if match doesn't exist
-        assert not is_valid(date)
-
-    @pytest.mark.parametrize('date', [
-        '1960-06-31',
-        '[1 760-01, 1760-02, 1760-12..]',
-    ])
-    def test_invalid_other(self, date):
-        # Not quite sure what to label these tests.
-        # Duplicates of level 2 tests but checked against any level.
         assert not is_valid(date)
 
 
