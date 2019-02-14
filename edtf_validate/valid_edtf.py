@@ -75,7 +75,7 @@ dateOrSeason = date | season
 # uncertain Or Approximate Date
 uncertainOrApproxDate = date + UASymbol
 # unspecified
-yearWithOneOrTwoUnspecifedDigits = digit + digit + (digit | 'u') + 'u'
+yearWithOneOrTwoUnspecifedDigits = Optional("-") + digit + digit + (digit | 'u') + 'u'
 monthUnspecified = year + '-uu'
 dayUnspecified = yearMonth + '-uu'
 dayAndMonthUnspecified = year + '-uu-uu'
@@ -133,10 +133,10 @@ internalUncertainOrApproximate = IUABase | "(" + IUABase + ")" + UASymbol
 positiveDigitOrU = positiveDigit | "u"
 digitOrU = positiveDigitOrU | "0"
 yearWithU = (
-    "u" + digitOrU + digitOrU + digitOrU |
-    digitOrU + "u" + digitOrU + digitOrU |
-    digitOrU + digitOrU + "u" + digitOrU |
-    digitOrU + digitOrU + digitOrU + "u"
+    Optional("-") + "u" + digitOrU + digitOrU + digitOrU |
+    Optional("-") + digitOrU + "u" + digitOrU + digitOrU |
+    Optional("-") + digitOrU + digitOrU + "u" + digitOrU |
+    Optional("-") + digitOrU + digitOrU + digitOrU + "u"
 )
 monthWithU = "u" + digitOrU | "0u" | "1u"
 oneThru3 = oneOf("1 2 3")
@@ -188,7 +188,7 @@ listContent = (
 choiceList = "[" + listContent + "]"
 inclusiveList = "{" + listContent + "}"
 # Masked precision
-maskedPrecision = digit + digit + ((digit + "x") | "xx")
+maskedPrecision = Optional("-") + digit + digit + ((digit + "x") | "xx")
 # L2Interval
 L2Interval = (
     dateWithInternalUncertainty + "/" + dateWithInternalUncertainty |

@@ -5,6 +5,7 @@ Change Log
 x.x.x
 =====
 
+* Fixed [an issue](https://github.com/unt-libraries/edtf-validate/issues/15/) where some negative dates weren't validating under level 1 or level 2.
 * Modified tests to use pytest, and more specifically, [parametrization](https://github.com/unt-libraries/edtf-validate/issues/3). Makes it easier to identify what specific
   input is the cause of any failed test.
 * Added continuous integration.
