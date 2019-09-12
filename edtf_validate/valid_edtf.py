@@ -6,6 +6,8 @@ given input complies with extended date time format level 0, 1, and 2
 Information about the extended date time format standard can be found here:
 http://www.loc.gov/standards/datetime/pre-submission.html
 """
+from __future__ import print_function
+
 import argparse
 import calendar
 import datetime
@@ -242,13 +244,13 @@ interval_replacements = {
 def replace_all(text, dic):
     """Takes a string and dictionary. replaces all occurrences of i with j"""
 
-    for i, j in dic.iteritems():
+    for i, j in dic.items():
         text = text.replace(i, j)
     return text
 
 
 U_PATTERN = re.compile(r'(-?)([\du]{4})(-[\du]{2})?(-[\du]{2})?/'
-                        '(-?)([\du]{4})(-[\du]{2})?(-[\du]{2})?')
+                       r'(-?)([\du]{4})(-[\du]{2})?(-[\du]{2})?')
 
 
 def replace_u_start_month(month):
@@ -534,7 +536,7 @@ def main():
     parser = argparse.ArgumentParser(description='edtf compliance.')
     parser.add_argument('edtf', type=str, help='edtf candidate')
     args = parser.parse_args()
-    print args.edtf + '\t' + str(is_valid(args.edtf))
+    print(args.edtf + '\t' + str(is_valid(args.edtf)))
 
 
 if __name__ == '__main__':
