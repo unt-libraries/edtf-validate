@@ -23,10 +23,10 @@ positiveDigit = oneOf("1 2 3 4 5 6 7 8 9")
 digit = positiveDigit | "0"
 # year definition
 positive_year = (
-    positiveDigit + digit + digit + digit |
-    digit + positiveDigit + digit + digit |
-    digit + digit + positiveDigit + digit |
-    digit + digit + digit + positiveDigit
+    positiveDigit + digit + digit + digit
+    | digit + positiveDigit + digit + digit
+    | digit + digit + positiveDigit + digit
+    | digit + digit + digit + positiveDigit
 )
 negative_year = "-" + positive_year
 year = positive_year | negative_year | "0000"
@@ -43,9 +43,9 @@ oneThru59 = oneThru31 | oneOf("32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 \
 zeroThru59 = "00" | oneThru59
 month = oneThru12
 monthDay = (
-    oneOf("01 03 05 07 08 10 12") + "-" + oneThru31 |
-    oneOf("04 06 09 11") + "-" + oneThru30 |
-    "02-" + oneThru29
+    oneOf("01 03 05 07 08 10 12") + "-" + oneThru31
+    | oneOf("04 06 09 11") + "-" + oneThru30
+    | "02-" + oneThru29
 )
 yearMonth = year + "-" + month
 yearMonthDay = year + "-" + monthDay
@@ -57,9 +57,9 @@ date = yearMonthDay | yearMonth | year
 baseTime = hour + ":" + minute + ":" + second | "24:00:00"
 zoneOffsetHour = oneThru13
 zoneOffset = "Z" | (
-    oneOf("+ -") + zoneOffsetHour + Optional(":" + minute) |
-    "14:00" |
-    "00:" + oneThru59
+    oneOf("+ -") + zoneOffsetHour + Optional(":" + minute)
+    | "14:00"
+    | "00:" + oneThru59
 )
 time = baseTime + Optional(zoneOffset)
 dateAndTime = date + "T" + time
@@ -82,22 +82,22 @@ monthUnspecified = year + '-uu'
 dayUnspecified = yearMonth + '-uu'
 dayAndMonthUnspecified = year + '-uu-uu'
 unspecified = (
-    dayAndMonthUnspecified |
-    dayUnspecified |
-    monthUnspecified |
-    yearWithOneOrTwoUnspecifedDigits
+    dayAndMonthUnspecified
+    | dayUnspecified
+    | monthUnspecified
+    | yearWithOneOrTwoUnspecifedDigits
 )
 # L1Interval
 L1Interval = (
-    (dateOrSeason + UASymbol | dateOrSeason | "unknown") + "/" +
-    (dateOrSeason + UASymbol | "open" | "unknown" | season) |
-    (dateOrSeason + UASymbol | "unknown" | season) + "/" +
-    (dateOrSeason + UASymbol | dateOrSeason | "open" | "unknown")
+    (dateOrSeason + UASymbol | dateOrSeason | "unknown") + "/"
+    + (dateOrSeason + UASymbol | "open" | "unknown" | season)
+    | (dateOrSeason + UASymbol | "unknown" | season) + "/"
+    + (dateOrSeason + UASymbol | dateOrSeason | "open" | "unknown")
 )
 # Long Year - Simple Form
 longYearSimple = (
-    "y" + Optional("-") +
-    positiveDigit + digit + digit + digit + OneOrMore(digit)
+    "y" + Optional("-")
+    + positiveDigit + digit + digit + digit + OneOrMore(digit)
 )
 """
 ------------------------------------------------------------------------------
@@ -109,54 +109,54 @@ LEVEL 2 GRAMMAR START
 # there are some cases where we could use Optional() instead of another OR
 IUABase = (
     (
-        year + UASymbol + "-(" + month + ")" +
-        UASymbol + "-(" + day + ")" + UASymbol
-    ) |
-    year + UASymbol + "-(" + month + ")" + UASymbol + Optional("-" + day) |
-    year + "-(" + month + ")" + UASymbol + "-(" + day + ")" + UASymbol |
-    year + "-(" + month + ")" + UASymbol + Optional("-" + day) |
-    year + UASymbol + "-" + monthDay + UASymbol |
-    (
-        "(" + year + ")" + Optional(UASymbol) +
-        "-" + monthDay + Optional(UASymbol)
-    ) |
-    year + UASymbol + "-" + monthDay |
-    year + UASymbol + "-" + month + "-(" + day + ")" + UASymbol |
-    year + UASymbol + "-(" + month + ")" + UASymbol |
-    yearMonth + UASymbol + "-(" + day + ")" + UASymbol |
-    yearMonth + "-(" + day + ")" + UASymbol |
-    year + "-(" + monthDay + ")" + UASymbol |
-    yearMonth + UASymbol + "-" + day |
-    year + UASymbol + "-" + month |
-    season + UASymbol
+        year + UASymbol + "-(" + month + ")"
+        + UASymbol + "-(" + day + ")" + UASymbol
+    )
+    | year + UASymbol + "-(" + month + ")" + UASymbol + Optional("-" + day)
+    | year + "-(" + month + ")" + UASymbol + "-(" + day + ")" + UASymbol
+    | year + "-(" + month + ")" + UASymbol + Optional("-" + day)
+    | year + UASymbol + "-" + monthDay + UASymbol
+    | (
+        "(" + year + ")" + Optional(UASymbol)
+        + "-" + monthDay + Optional(UASymbol)
+    )
+    | year + UASymbol + "-" + monthDay
+    | year + UASymbol + "-" + month + "-(" + day + ")" + UASymbol
+    | year + UASymbol + "-(" + month + ")" + UASymbol
+    | yearMonth + UASymbol + "-(" + day + ")" + UASymbol
+    | yearMonth + "-(" + day + ")" + UASymbol
+    | year + "-(" + monthDay + ")" + UASymbol
+    | yearMonth + UASymbol + "-" + day
+    | year + UASymbol + "-" + month
+    | season + UASymbol
 )
 internalUncertainOrApproximate = IUABase | "(" + IUABase + ")" + UASymbol
 # Internal Unspecified
 positiveDigitOrU = positiveDigit | "u"
 digitOrU = positiveDigitOrU | "0"
 yearWithU = (
-    Optional("-") + "u" + digitOrU + digitOrU + digitOrU |
-    Optional("-") + digitOrU + "u" + digitOrU + digitOrU |
-    Optional("-") + digitOrU + digitOrU + "u" + digitOrU |
-    Optional("-") + digitOrU + digitOrU + digitOrU + "u"
+    Optional("-") + "u" + digitOrU + digitOrU + digitOrU
+    | Optional("-") + digitOrU + "u" + digitOrU + digitOrU
+    | Optional("-") + digitOrU + digitOrU + "u" + digitOrU
+    | Optional("-") + digitOrU + digitOrU + digitOrU + "u"
 )
 monthWithU = "u" + digitOrU | "0u" | "1u"
 oneThru3 = oneOf("1 2 3")
 dayWithU = "u" + digitOrU | oneThru3 + "u" | "0u"
 monthDayWithU = (
-    monthWithU + "-" + dayWithU |
-    month + "-" + dayWithU |
-    monthWithU + "-" + day
+    monthWithU + "-" + dayWithU
+    | month + "-" + dayWithU
+    | monthWithU + "-" + day
 )
 yearMonthWithU = (
-    yearWithU + "-" + monthWithU |
-    yearWithU + "-" + month |
-    year + "-" + monthWithU
+    yearWithU + "-" + monthWithU
+    | yearWithU + "-" + month
+    | year + "-" + monthWithU
 )
 yearMonthDayWithU = (
-    yearWithU + "-" + monthDayWithU |
-    yearWithU + "-" + monthDay |
-    year + "-" + monthDayWithU
+    yearWithU + "-" + monthDayWithU
+    | yearWithU + "-" + monthDay
+    | year + "-" + monthDayWithU
 )
 internalUnspecified = yearMonthDayWithU | yearMonthWithU | yearWithU
 # Auxiliary Assignments for Level 2
@@ -164,28 +164,28 @@ dateWithInternalUncertainty = (
     internalUncertainOrApproximate | internalUnspecified
 )
 consecutives = (
-    yearMonthDay + ".." + yearMonthDay |
-    yearMonth + ".." + yearMonth |
-    year + ".." + year
+    yearMonthDay + ".." + yearMonthDay
+    | yearMonth + ".." + yearMonth
+    | year + ".." + year
 )
 # Inclusive list and choice list
 earlier = ".." + date
 later = date + ".."
 listElement = (
-    dateWithInternalUncertainty |
-    uncertainOrApproxDate |
-    unspecified |
-    consecutives |
-    date
+    dateWithInternalUncertainty
+    | uncertainOrApproxDate
+    | unspecified
+    | consecutives
+    | date
 )
 listContent = (
-    earlier + "," + Optional(" ") +
-    ZeroOrMore(listElement + "," + Optional(" ")) + later |
-    ZeroOrMore(listElement + "," + Optional(" ")) + consecutives |
-    ZeroOrMore(listElement + "," + Optional(" ")) + later |
-    earlier + ZeroOrMore("," + Optional(" ") + listElement) |
-    listElement + OneOrMore("," + Optional(" ") + listElement) |
-    consecutives
+    earlier + "," + Optional(" ")
+    + ZeroOrMore(listElement + "," + Optional(" ")) + later
+    | ZeroOrMore(listElement + "," + Optional(" ")) + consecutives
+    | ZeroOrMore(listElement + "," + Optional(" ")) + later
+    | earlier + ZeroOrMore("," + Optional(" ") + listElement)
+    | listElement + OneOrMore("," + Optional(" ") + listElement)
+    | consecutives
 )
 choiceList = "[" + listContent + "]"
 inclusiveList = "{" + listContent + "}"
@@ -193,15 +193,15 @@ inclusiveList = "{" + listContent + "}"
 maskedPrecision = Optional("-") + digit + digit + ((digit + "x") | "xx")
 # L2Interval
 L2Interval = (
-    dateWithInternalUncertainty + "/" + dateWithInternalUncertainty |
-    dateOrSeason + "/" + dateWithInternalUncertainty |
-    dateWithInternalUncertainty + "/" + dateOrSeason
+    dateWithInternalUncertainty + "/" + dateWithInternalUncertainty
+    | dateOrSeason + "/" + dateWithInternalUncertainty
+    | dateWithInternalUncertainty + "/" + dateOrSeason
 )
 # Long Year - Scientific Form
 positiveInteger = positiveDigit + ZeroOrMore(digit)
 longYearScientific = (
-    "y" + Optional("-") + positiveInteger + "e" + positiveInteger +
-    Optional("p" + positiveInteger)
+    "y" + Optional("-") + positiveInteger + "e" + positiveInteger
+    + Optional("p" + positiveInteger)
 )
 # SeasonQualified
 qualifyingString = Word(alphas)
@@ -216,22 +216,22 @@ GLOBAL GRAMMAR START
 level0Expression = L0Interval | dateAndTime | date.leaveWhitespace()
 # level 1
 level1Expression = (
-    L1Interval |
-    longYearSimple |
-    uncertainOrApproxDate |
-    unspecified |
-    season
+    L1Interval
+    | longYearSimple
+    | uncertainOrApproxDate
+    | unspecified
+    | season
 )
 # level 2
 level2Expression = (
-    L2Interval |
-    longYearScientific |
-    choiceList |
-    inclusiveList |
-    internalUncertainOrApproximate |
-    internalUnspecified |
-    maskedPrecision |
-    seasonQualified
+    L2Interval
+    | longYearScientific
+    | choiceList
+    | inclusiveList
+    | internalUncertainOrApproximate
+    | internalUnspecified
+    | maskedPrecision
+    | seasonQualified
 )
 # everything resolves to a 'dateTimeString'
 dateTimeString = level2Expression | level1Expression | level0Expression
@@ -468,9 +468,9 @@ def is_valid_interval(edtf_candidate):
                 return True
         # if the to_date is unknown or open, it could be any date, therefore
         elif (
-            parts[1] == 'unknown' or
-            parts[1] == 'open' or
-            parts[0] == 'unknown'
+            parts[1] == 'unknown'
+            or parts[1] == 'open'
+            or parts[0] == 'unknown'
         ):
             return True
         # if start and end are positive, the from_date must be <= to_date
@@ -519,9 +519,9 @@ def is_valid(edtf_candidate):
     """isValid takes a candidate date and returns if it is valid or not"""
 
     if (
-        isLevel0(edtf_candidate) or
-        isLevel1(edtf_candidate) or
-        isLevel2(edtf_candidate)
+        isLevel0(edtf_candidate)
+        or isLevel1(edtf_candidate)
+        or isLevel2(edtf_candidate)
     ):
         if '/' in edtf_candidate:
             return is_valid_interval(edtf_candidate)
