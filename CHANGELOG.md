@@ -11,7 +11,7 @@ x.x.x
 * Added continuous integration.
 * Improved support for [dates with "u"](https://github.com/unt-libraries/edtf-validate/issues/5).
 * Fixed an issue where [level 0 dates validated as level 1 dates](https://github.com/unt-libraries/edtf-validate/issues/6).
-
+* Support Python versions through 3.7.
 
 1.0.0
 -----
