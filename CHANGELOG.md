@@ -2,7 +2,7 @@ Change Log
 ==========
 
 
-x.x.x
+1.1.0
 =====
 
 * Fixed [an issue](https://github.com/unt-libraries/edtf-validate/issues/15/) where some negative dates weren't validating under level 1 or level 2.
