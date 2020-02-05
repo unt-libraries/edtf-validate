@@ -3,7 +3,7 @@ edtf-validate
 [![PyPI](https://img.shields.io/pypi/v/edtf-validate.svg)](https://pypi.python.org/pypi/edtf-validate)
 [![Build Status](https://travis-ci.org/unt-libraries/edtf-validate.svg?branch=master)](https://travis-ci.org/unt-libraries/edtf-validate)
 
-Valid EDTF provides validity testing against levels 0-2 of the [draft EDTF specification](https://www.loc.gov/standards/datetime/pre-submission.html).
+Valid EDTF provides validity testing against levels 0-2 of the [draft EDTF specification](https://web.archive.org/web/20190901044159/https://www.loc.gov/standards/datetime/pre-submission.html).
 Please note that the draft specification is quite different from the [current specification](https://www.loc.gov/standards/datetime/edtf.html),
 which uses different syntax than what is validated here.
 You might find it most useful for tasks involving date validation and comparison. Typical usage often looks like this:
