@@ -251,7 +251,7 @@ def replace_all(text, dic):
 
 # season start and end dates for use in interval checking
 # erring toward inclusivity
-season_replacements = {
+seasons = {
     '21': {'from': '01', 'to': '05'},
     '22': {'from': '05', 'to': '08'},
     '23': {'from': '08', 'to': '11'},
@@ -267,7 +267,7 @@ def replace_season(season_date, marker):
     marker -- 'from' or 'to' representing earliest or latest season month
     """
     y_part, m_part = season_date.split('-')
-    m_part = season_replacements[m_part][marker]
+    m_part = seasons[m_part][marker]
     return '-'.join([y_part, m_part])
 
 
@@ -463,6 +463,13 @@ def is_valid_interval(edtf_candidate):
             from_date = datetime.datetime.strptime(parts[0], "%Y-%m-%d")
         if parts[1].count("-") == 2:
             to_date = datetime.datetime.strptime(parts[1], "%Y-%m-%d")
+        # handle special case of same year season/season range due to
+        # the overlap of the months we are designating for the seasons
+        if parts[0].count("-") == 1 and parts[1].count("-") == 1:
+            from_year, from_month = parts[0].split("-")
+            to_year, to_month = parts[1].split("-")
+            if from_year == to_year and from_month in seasons and to_month in seasons:
+                return from_month <= to_month
         # 1 '-' character means we are match year-month
         if parts[0].count("-") == 1:
             try:
