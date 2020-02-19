@@ -2,6 +2,12 @@ Change Log
 ==========
 
 
+1.1.1
+=====
+
+* Fixed error on `is_valid` when checking an [interval with a season](https://github.com/unt-libraries/edtf-validate/issues/20).
+* In README.md, updated draft EDTF specification link to fix the 404.
+
 1.1.0
 =====
 

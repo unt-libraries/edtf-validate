@@ -73,7 +73,7 @@ LEVEL 1 GRAMMAR START
 UASymbol = oneOf("? ~ ?~")
 seasonNumber = oneOf("21 22 23 24")
 season = year + "-" + seasonNumber
-dateOrSeason = date | season
+dateOrSeason = season | date
 # uncertain Or Approximate Date
 uncertainOrApproxDate = date + UASymbol
 # unspecified
@@ -247,6 +247,28 @@ def replace_all(text, dic):
     for i, j in dic.items():
         text = text.replace(i, j)
     return text
+
+
+# season start and end dates for use in interval checking
+# erring toward inclusivity
+seasons = {
+    '21': {'from': '01', 'to': '05'},
+    '22': {'from': '05', 'to': '08'},
+    '23': {'from': '08', 'to': '11'},
+    '24': {'from': '10', 'to': '12'},
+}
+
+
+def replace_season(season_date, marker):
+    """Replace a season with a month.
+
+    Keyword arguments:
+    season_date -- edtf candidate of form year-season
+    marker -- 'from' or 'to' representing earliest or latest season month
+    """
+    y_part, m_part = season_date.split('-')
+    m_part = seasons[m_part][marker]
+    return '-'.join([y_part, m_part])
 
 
 U_PATTERN = re.compile(r'(-?)([\du]{4})(-[\du]{2})?(-[\du]{2})?/'
@@ -441,11 +463,28 @@ def is_valid_interval(edtf_candidate):
             from_date = datetime.datetime.strptime(parts[0], "%Y-%m-%d")
         if parts[1].count("-") == 2:
             to_date = datetime.datetime.strptime(parts[1], "%Y-%m-%d")
+        # handle special case of same year season/season range due to
+        # the overlap of the months we are designating for the seasons
+        if parts[0].count("-") == 1 and parts[1].count("-") == 1:
+            from_year, from_month = parts[0].split("-")
+            to_year, to_month = parts[1].split("-")
+            if from_year == to_year and from_month in seasons and to_month in seasons:
+                return from_month <= to_month
         # 1 '-' character means we are match year-month
         if parts[0].count("-") == 1:
-            from_date = datetime.datetime.strptime(parts[0], "%Y-%m")
+            try:
+                from_date = datetime.datetime.strptime(parts[0], "%Y-%m")
+            except ValueError:
+                # month is a season; use earliest possible month
+                replaced_season = replace_season(parts[0], 'from')
+                from_date = datetime.datetime.strptime(replaced_season, "%Y-%m")
         if parts[1].count("-") == 1:
-            to_date = datetime.datetime.strptime(parts[1], "%Y-%m")
+            try:
+                to_date = datetime.datetime.strptime(parts[1], "%Y-%m")
+            except ValueError:
+                # month is a season; use latest possible month
+                replaced_season = replace_season(parts[1], 'to')
+                to_date = datetime.datetime.strptime(replaced_season, "%Y-%m")
         # zero '-' characters means we are matching a year
         if parts[0].count("-") == 0:
             # if from_date is unknown, we can assume the lowest possible date
