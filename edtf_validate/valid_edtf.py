@@ -70,7 +70,7 @@ LEVEL 1 GRAMMAR START
 ------------------------------------------------------------------------------
 """
 # Auxiliary Assignments for Level 1
-UASymbol = oneOf("? ~ ?~")
+UASymbol = oneOf("? ~ %")
 seasonNumber = oneOf("21 22 23 24")
 season = year + "-" + seasonNumber
 dateOrSeason = season | date
@@ -439,7 +439,7 @@ def is_valid_interval(edtf_candidate):
     # initialize interval flags for special cases, assume positive
     end, start = 'pos', 'pos'
     if edtf_candidate.count('/') == 1:
-        # replace all 'problem' cases (unspecified, 0000 date, ?~, -, y)
+        # replace all 'problem' cases (unspecified, 0000 date, %, -, y)
         # break the interval into two date strings
         edtf_candidate = replace_all(edtf_candidate, interval_replacements)
         edtf_candidate = re.sub(U_PATTERN, replace_u, edtf_candidate)
