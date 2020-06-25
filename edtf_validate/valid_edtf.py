@@ -189,8 +189,6 @@ listContent = (
 )
 choiceList = "[" + listContent + "]"
 inclusiveList = "{" + listContent + "}"
-# Masked precision
-maskedPrecision = Optional("-") + digit + digit + ((digit + "x") | "xx")
 # L2Interval
 L2Interval = (
     dateWithInternalUncertainty + "/" + dateWithInternalUncertainty
@@ -230,7 +228,6 @@ level2Expression = (
     | inclusiveList
     | internalUncertainOrApproximate
     | internalUnspecified
-    | maskedPrecision
     | seasonQualified
 )
 # everything resolves to a 'dateTimeString'

@@ -232,9 +232,6 @@ class TestLevel2(object):
         '[1667, 1760-12]',
         '{1667,1668, 1670..1672}',
         '{1960, 1961-12}',
-        '196x',
-        '19xx',
-        '-19xx',
         '2004-06-(01)~/2004-06-(20)~',
         '2004-06-uu/2004-07-03',
         'y17e7',
@@ -248,6 +245,9 @@ class TestLevel2(object):
     @pytest.mark.parametrize('date', [
         '1960-06-31',
         '[1 760-01, 1760-02, 1760-12..]',
+        '196x',
+        '19xx',
+        '-19xx',
     ])
     def test_invalid_level_2(self, date):
         assert not isLevel2(date)
