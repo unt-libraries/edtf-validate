@@ -96,7 +96,7 @@ L1Interval = (
 )
 # Long Year - Simple Form
 longYearSimple = (
-    "y" + Optional("-")
+    "Y" + Optional("-")
     + positiveDigit + digit + digit + digit + OneOrMore(digit)
 )
 """
@@ -198,8 +198,8 @@ L2Interval = (
 # Long Year - Scientific Form
 positiveInteger = positiveDigit + ZeroOrMore(digit)
 longYearScientific = (
-    "y" + Optional("-") + positiveInteger + "e" + positiveInteger
-    + Optional("p" + positiveInteger)
+    "Y" + Optional("-") + positiveInteger + "E" + positiveInteger
+    + Optional("S" + positiveInteger)
 )
 # SeasonQualified
 qualifyingString = Word(alphas)
