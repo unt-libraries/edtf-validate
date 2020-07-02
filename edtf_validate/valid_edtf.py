@@ -77,10 +77,10 @@ dateOrSeason = season | date
 # uncertain Or Approximate Date
 uncertainOrApproxDate = date + UASymbol
 # unspecified
-yearWithOneOrTwoUnspecifedDigits = Optional("-") + digit + digit + (digit | 'u') + 'u'
-monthUnspecified = year + '-uu'
-dayUnspecified = yearMonth + '-uu'
-dayAndMonthUnspecified = year + '-uu-uu'
+yearWithOneOrTwoUnspecifedDigits = Optional("-") + digit + digit + (digit | 'X') + 'X'
+monthUnspecified = year + '-XX'
+dayUnspecified = yearMonth + '-XX'
+dayAndMonthUnspecified = year + '-XX-XX'
 unspecified = (
     dayAndMonthUnspecified
     | dayUnspecified
@@ -89,10 +89,11 @@ unspecified = (
 )
 # L1Interval
 L1Interval = (
-    (dateOrSeason + UASymbol | dateOrSeason | "unknown") + "/"
-    + (dateOrSeason + UASymbol | "open" | "unknown" | season)
-    | (dateOrSeason + UASymbol | "unknown" | season) + "/"
-    + (dateOrSeason + UASymbol | dateOrSeason | "open" | "unknown")
+    (dateOrSeason + UASymbol | dateOrSeason | "" | "..") + "/"
+    + (dateOrSeason + UASymbol | ".." | "" | season)
+    | (dateOrSeason + UASymbol | "" | season | "..") + "/"
+    + (dateOrSeason + UASymbol | dateOrSeason | ".." | "")
+
 )
 # Long Year - Simple Form
 longYearSimple = (
@@ -132,17 +133,17 @@ IUABase = (
 )
 internalUncertainOrApproximate = IUABase | "(" + IUABase + ")" + UASymbol
 # Internal Unspecified
-positiveDigitOrU = positiveDigit | "u"
+positiveDigitOrU = positiveDigit | "X"
 digitOrU = positiveDigitOrU | "0"
 yearWithU = (
-    Optional("-") + "u" + digitOrU + digitOrU + digitOrU
-    | Optional("-") + digitOrU + "u" + digitOrU + digitOrU
-    | Optional("-") + digitOrU + digitOrU + "u" + digitOrU
-    | Optional("-") + digitOrU + digitOrU + digitOrU + "u"
+    Optional("-") + "X" + digitOrU + digitOrU + digitOrU
+    | Optional("-") + digitOrU + "X" + digitOrU + digitOrU
+    | Optional("-") + digitOrU + digitOrU + "X" + digitOrU
+    | Optional("-") + digitOrU + digitOrU + digitOrU + "X"
 )
-monthWithU = "u" + digitOrU | "0u" | "1u"
+monthWithU = "X" + digitOrU | "0X" | "1X"
 oneThru3 = oneOf("1 2 3")
-dayWithU = "u" + digitOrU | oneThru3 + "u" | "0u"
+dayWithU = "X" + digitOrU | oneThru3 + "X" | "0X"
 monthDayWithU = (
     monthWithU + "-" + dayWithU
     | month + "-" + dayWithU
@@ -268,44 +269,44 @@ def replace_season(season_date, marker):
     return '-'.join([y_part, m_part])
 
 
-U_PATTERN = re.compile(r'(-?)([\du]{4})(-[\du]{2})?(-[\du]{2})?/'
-                       r'(-?)([\du]{4})(-[\du]{2})?(-[\du]{2})?')
+U_PATTERN = re.compile(r'(-?)([\dX]{4})(-[\dX]{2})?(-[\dX]{2})?/'
+                       r'(-?)([\dX]{4})(-[\dX]{2})?(-[\dX]{2})?')
 
 
 def replace_u_start_month(month):
     """Find the earliest legitimate month."""
     month = month.lstrip('-')
-    if month == 'uu' or month == '0u':
+    if month == 'XX' or month == '0X':
         return '01'
-    if month == 'u0':
+    if month == 'X0':
         return '10'
-    return month.replace('u', '0')
+    return month.replace('X', '0')
 
 
 def replace_u_end_month(month):
     """Find the latest legitimate month."""
     month = month.lstrip('-')
-    if month == 'uu' or month == '1u':
+    if month == 'XX' or month == '1X':
         return '12'
-    if month == 'u0':
+    if month == 'X0':
         return '10'
-    if month == '0u':
+    if month == '0X':
         return '09'
     if month[1] in ['1', '2']:
         # 'u1' or 'u2'
-        return month.replace('u', '1')
+        return month.replace('X', '1')
     # Otherwise it should match r'u[3-9]'.
-    return month.replace('u', '0')
+    return month.replace('X', '0')
 
 
 def replace_u_start_day(day):
     """Find the earliest legitimate day."""
     day = day.lstrip('-')
-    if day == 'uu' or day == '0u':
+    if day == 'XX' or day == '0X':
         return '01'
-    if day == 'u0':
+    if day == 'X0':
         return '10'
-    return day.replace('u', '0')
+    return day.replace('X', '0')
 
 
 def replace_u_end_day(day, year, month):
@@ -313,15 +314,15 @@ def replace_u_end_day(day, year, month):
     day = day.lstrip('-')
     year = int(year)
     month = int(month.lstrip('-'))
-    if day == 'uu' or day == '3u':
+    if day == 'XX' or day == '3X':
         # Use the last day of the month for a given year/month.
         return str(calendar.monthrange(year, month)[1])
-    if day == '0u' or day == '1u':
-        return day.replace('u', '9')
-    if day == '2u' or day == 'u9':
+    if day == '0X' or day == '1X':
+        return day.replace('X', '9')
+    if day == '2X' or day == 'X9':
         if month != '02' or calendar.isleap(year):
             return '29'
-        elif day == '2u':
+        elif day == '2X':
             # It is Feburary and not a leap year.
             return '28'
         else:
@@ -329,15 +330,15 @@ def replace_u_end_day(day, year, month):
             return '19'
     # 'u2' 'u3' 'u4' 'u5' 'u6' 'u7' 'u8'
     if 1 < int(day[1]) < 9:
-        return day.replace('u', '2')
+        return day.replace('X', '2')
     # 'u0' 'u1'
-    if day == 'u1':
+    if day == 'X1':
         if calendar.monthrange(year, month)[1] == 31:
             # See if the month has a 31st.
             return '31'
         else:
             return '21'
-    if day == 'u0':
+    if day == 'X0':
         if calendar.monthrange(year, month)[1] >= 30:
             return '30'
     else:
@@ -352,21 +353,21 @@ def replace_u(matchobj):
     """
     pieces = list(matchobj.groups(''))
     # Replace "u"s in start and end years.
-    if 'u' in pieces[1]:
-        pieces[1] = pieces[1].replace('u', '0')
-    if 'u' in pieces[5]:
-        pieces[5] = pieces[5].replace('u', '9')
+    if 'X' in pieces[1]:
+        pieces[1] = pieces[1].replace('X', '0')
+    if 'X' in pieces[5]:
+        pieces[5] = pieces[5].replace('X', '9')
     # Replace "u"s in start month.
-    if 'u' in pieces[2]:
+    if 'X' in pieces[2]:
         pieces[2] = '-' + replace_u_start_month(pieces[2])
     # Replace "u"s in end month.
-    if 'u' in pieces[6]:
+    if 'X' in pieces[6]:
         pieces[6] = '-' + replace_u_end_month(pieces[6])
     # Replace "u"s in start day.
-    if 'u' in pieces[3]:
+    if 'X' in pieces[3]:
         pieces[3] = '-' + replace_u_start_day(pieces[3])
     # Replace "u"s in end day.
-    if 'u' in pieces[7]:
+    if 'X' in pieces[7]:
         pieces[7] = '-' + replace_u_end_day(pieces[7], year=pieces[5],
                                             month=pieces[6])
     return ''.join((''.join(pieces[:4]), '/', ''.join(pieces[4:])))
@@ -485,14 +486,19 @@ def is_valid_interval(edtf_candidate):
         # zero '-' characters means we are matching a year
         if parts[0].count("-") == 0:
             # if from_date is unknown, we can assume the lowest possible date
-            if parts[0] == 'unknown':
+            if parts[0] == '':
                 from_date = datetime.datetime.strptime("0001", "%Y")
+            elif parts[0] == '..':
+                print('entered open start date') 
+                from_date = '..'
             else:
                 from_date = datetime.datetime.strptime(parts[0], "%Y")
         if parts[1].count("-") == 0:
             # when the to_date is open and the from_date is valid, it's valid
-            if parts[1] == 'open' or parts[1] == 'unknown':
-                to_date = 'open'
+            if parts[1] == '..':
+                to_date = '..'
+            elif parts[1] == '':
+                to_date == ''
             else:
                 to_date = datetime.datetime.strptime(parts[1], "%Y")
         # if it starts negative and ends positive, that's always True
@@ -504,9 +510,10 @@ def is_valid_interval(edtf_candidate):
                 return True
         # if the to_date is unknown or open, it could be any date, therefore
         elif (
-            parts[1] == 'unknown'
-            or parts[1] == 'open'
-            or parts[0] == 'unknown'
+            parts[1] == ''
+            or parts[1] == '..'
+            or parts[0] == ''
+            or parts[0] == '..'
         ):
             return True
         # if start and end are positive, the from_date must be <= to_date
