@@ -34,6 +34,8 @@ class TestIsValid(object):
         '1000/2000',
         '/2000',
         '/..',
+        '../',
+        '../1985-04',
         '2017-01-14/..',
         '0000/0000',
         '0000-02/1111',
@@ -193,12 +195,13 @@ class TestLevel1(object):
         '-2003-22',
         '2000-23',
         '2010-24',
+        '2013/2014',
     ])
     def test_valid_level_1(self, date):
         assert isLevel1(date)
 
     def test_invalid_level_1(self):
-        assert not isLevel1('2013/2014')
+        assert not isLevel1('~2013/2014')
 
 
 class TestLevel2(object):

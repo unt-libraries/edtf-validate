@@ -90,8 +90,8 @@ unspecified = (
 # L1Interval
 L1Interval = (
     (dateOrSeason + UASymbol | dateOrSeason | "" | "..") + "/"
-    + (dateOrSeason + UASymbol | ".." | "" | season)
-    | (dateOrSeason + UASymbol | "" | season | "..") + "/"
+    + (dateOrSeason + UASymbol | ".." | dateOrSeason)
+    | (dateOrSeason + UASymbol | dateOrSeason | "..") + "/"
     + (dateOrSeason + UASymbol | dateOrSeason | ".." | "")
 
 )
@@ -489,7 +489,6 @@ def is_valid_interval(edtf_candidate):
             if parts[0] == '':
                 from_date = datetime.datetime.strptime("0001", "%Y")
             elif parts[0] == '..':
-                print('entered open start date') 
                 from_date = '..'
             else:
                 from_date = datetime.datetime.strptime(parts[0], "%Y")
