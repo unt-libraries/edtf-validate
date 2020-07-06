@@ -240,6 +240,8 @@ class TestLevel2(object):
         'Y17E7',
         'Y-17E7',
         'Y17101E4S3',
+        '1950S2',
+        'Y171010000S3',
         '2001-21^southernHemisphere',
     ])
     def test_valid_level_2(self, date):

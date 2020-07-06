@@ -202,6 +202,11 @@ longYearScientific = (
     "Y" + Optional("-") + positiveInteger + "E" + positiveInteger
     + Optional("S" + positiveInteger)
 )
+# Significant digits
+SignificantDigitYear = (
+    (year | longYearScientific | longYearSimple)
+    + Optional("S" + positiveInteger)
+)
 # SeasonQualified
 qualifyingString = Word(alphas)
 seasonQualifier = qualifyingString
@@ -224,18 +229,19 @@ level1Expression = (
 # level 2
 level2Expression = (
     L2Interval
-    | longYearScientific
     | choiceList
     | inclusiveList
     | internalUncertainOrApproximate
     | internalUnspecified
     | seasonQualified
+    | SignificantDigitYear
 )
 # everything resolves to a 'dateTimeString'
 dateTimeString = level2Expression | level1Expression | level0Expression
 interval_replacements = {
     '~': '',
     '?': '',
+    '%': '',
 }
 
 
