@@ -243,7 +243,8 @@ class TestLevel2(object):
         'Y17101E4S3',
         '1950S2',
         'Y171010000S3',
-        '2001-21^southernHemisphere',
+        '2001-29',
+        '2001-34',
     ])
     def test_valid_level_2(self, date):
         assert isLevel2(date)
@@ -254,6 +255,7 @@ class TestLevel2(object):
         '196x',
         '19xx',
         '-19xx',
+        '2001-21^southernHemisphere',
     ])
     def test_invalid_level_2(self, date):
         assert not isLevel2(date)
