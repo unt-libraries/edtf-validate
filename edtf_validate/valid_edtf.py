@@ -128,6 +128,8 @@ IUABase = (
     | yearMonth + "-(" + day + ")" + UASymbol
     | year + "-(" + monthDay + ")" + UASymbol
     | yearMonth + UASymbol + "-" + day
+    | yearMonth + "-" + UASymbol + day
+    | year + "-" + UASymbol + monthDay
     | year + UASymbol + "-" + month
     | season + UASymbol
 )
@@ -203,7 +205,7 @@ longYearScientific = (
     + Optional("S" + positiveInteger)
 )
 # Significant digits
-SignificantDigitYear = (
+significantDigitYear = (
     (year | longYearScientific | longYearSimple)
     + Optional("S" + positiveInteger)
 )
@@ -233,7 +235,7 @@ level2Expression = (
     | internalUncertainOrApproximate
     | internalUnspecified
     | extendedSeason
-    | SignificantDigitYear
+    | significantDigitYear
 )
 # everything resolves to a 'dateTimeString'
 dateTimeString = level2Expression | level1Expression | level0Expression
