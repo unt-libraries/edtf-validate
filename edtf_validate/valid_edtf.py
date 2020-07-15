@@ -13,7 +13,7 @@ import calendar
 import datetime
 import re
 
-from pyparsing import Optional, oneOf, OneOrMore, ZeroOrMore
+from pyparsing import Optional, oneOf, OneOrMore, ZeroOrMore, Empty
 """
 ------------------------------------------------------------------------------
 LEVEL 0 GRAMMAR START
@@ -88,13 +88,14 @@ unspecified = (
     | yearWithOneOrTwoUnspecifedDigits
 )
 # L1Interval
+
 L1Interval = (
-    (dateOrSeason + UASymbol | dateOrSeason | "" | "..") + "/"
+    (dateOrSeason + UASymbol | dateOrSeason | Empty() | "..") + "/"
     + (dateOrSeason + UASymbol | ".." | dateOrSeason)
     | (dateOrSeason + UASymbol | dateOrSeason | "..") + "/"
-    + (dateOrSeason + UASymbol | dateOrSeason | ".." | "")
-
+    + (dateOrSeason + UASymbol | dateOrSeason | ".." | Empty())
 )
+
 # Long Year - Simple Form
 longYearSimple = (
     "Y" + Optional("-")
@@ -110,58 +111,68 @@ LEVEL 2 GRAMMAR START
 # there are some cases where we could use Optional() instead of another OR
 IUABase = (
     (
-        year + UASymbol + "-(" + month + ")"
-        + UASymbol + "-(" + day + ")" + UASymbol
+        year + UASymbol + "-" + month
+        + UASymbol + "-" + day + UASymbol
     )
-    | year + UASymbol + "-(" + month + ")" + UASymbol + Optional("-" + day)
-    | year + "-(" + month + ")" + UASymbol + "-(" + day + ")" + UASymbol
-    | year + "-(" + month + ")" + UASymbol + Optional("-" + day)
+    | year + UASymbol + "-" + month + UASymbol + Optional("-" + day)
+    | year + "-" + month + UASymbol + "-" + day + UASymbol
+    | year + "-" + month + UASymbol + Optional("-" + day)
     | year + UASymbol + "-" + monthDay + UASymbol
     | (
-        "(" + year + ")" + Optional(UASymbol)
+        year + Optional(UASymbol)
         + "-" + monthDay + Optional(UASymbol)
     )
     | year + UASymbol + "-" + monthDay
-    | year + UASymbol + "-" + month + "-(" + day + ")" + UASymbol
-    | year + UASymbol + "-(" + month + ")" + UASymbol
-    | yearMonth + UASymbol + "-(" + day + ")" + UASymbol
-    | yearMonth + "-(" + day + ")" + UASymbol
-    | year + "-(" + monthDay + ")" + UASymbol
+    | year + UASymbol + "-" + month + "-" + day + UASymbol
+    | year + UASymbol + "-" + month + UASymbol
+    | yearMonth + UASymbol + "-" + day + UASymbol
+    | year + UASymbol + "-" + month + "-" + UASymbol + day
+    | yearMonth + "-" + day + UASymbol
+    | year + "-" + monthDay + UASymbol
     | yearMonth + UASymbol + "-" + day
     | yearMonth + "-" + UASymbol + day
-    | year + "-" + UASymbol + monthDay
     | year + UASymbol + "-" + month
+    | year + "-" + UASymbol + month + UASymbol
+    | year + "-" + UASymbol + month + Optional("-" + day)
+    | year + "-" + UASymbol + month + "-" + UASymbol + day
+    | year + UASymbol + "-" + UASymbol + month + Optional("-" + day)
+    | year + UASymbol + "-" + UASymbol + monthDay
+    | UASymbol + year + "-" + UASymbol + monthDay
+    | UASymbol + year + "-" + month + "-" + UASymbol + day
+    | UASymbol + year + "-" + month + "-" + day + UASymbol
+    | UASymbol + year + "-" + month + UASymbol
     | season + UASymbol
 )
-internalUncertainOrApproximate = IUABase | "(" + IUABase + ")" + UASymbol
+
+internalUncertainOrApproximate = IUABase | IUABase + UASymbol
 # Internal Unspecified
-positiveDigitOrU = positiveDigit | "X"
-digitOrU = positiveDigitOrU | "0"
-yearWithU = (
-    Optional("-") + "X" + digitOrU + digitOrU + digitOrU
-    | Optional("-") + digitOrU + "X" + digitOrU + digitOrU
-    | Optional("-") + digitOrU + digitOrU + "X" + digitOrU
-    | Optional("-") + digitOrU + digitOrU + digitOrU + "X"
+positiveDigitOrX = positiveDigit | "X"
+digitOrX = positiveDigitOrX | "0"
+yearWithX = (
+    Optional("-") + "X" + digitOrX + digitOrX + digitOrX
+    | Optional("-") + digitOrX + "X" + digitOrX + digitOrX
+    | Optional("-") + digitOrX + digitOrX + "X" + digitOrX
+    | Optional("-") + digitOrX + digitOrX + digitOrX + "X"
 )
-monthWithU = "X" + digitOrU | "0X" | "1X"
+monthWithX = "X" + digitOrX | "0X" | "1X"
 oneThru3 = oneOf("1 2 3")
-dayWithU = "X" + digitOrU | oneThru3 + "X" | "0X"
-monthDayWithU = (
-    monthWithU + "-" + dayWithU
-    | month + "-" + dayWithU
-    | monthWithU + "-" + day
+dayWithX = "X" + digitOrX | oneThru3 + "X" | "0X"
+monthDayWithX = (
+    monthWithX + "-" + dayWithX
+    | month + "-" + dayWithX
+    | monthWithX + "-" + day
 )
-yearMonthWithU = (
-    yearWithU + "-" + monthWithU
-    | yearWithU + "-" + month
-    | year + "-" + monthWithU
+yearMonthWithX = (
+    yearWithX + "-" + monthWithX
+    | yearWithX + "-" + month
+    | year + "-" + monthWithX
 )
-yearMonthDayWithU = (
-    yearWithU + "-" + monthDayWithU
-    | yearWithU + "-" + monthDay
-    | year + "-" + monthDayWithU
+yearmonthDayWithX = (
+    yearWithX + "-" + monthDayWithX
+    | yearWithX + "-" + monthDay
+    | year + "-" + monthDayWithX
 )
-internalUnspecified = yearMonthDayWithU | yearMonthWithU | yearWithU
+internalUnspecified = yearmonthDayWithX | yearMonthWithX | yearWithX
 # Auxiliary Assignments for Level 2
 dateWithInternalUncertainty = (
     internalUncertainOrApproximate | internalUnspecified
@@ -182,12 +193,12 @@ listElement = (
     | date
 )
 listContent = (
-    earlier + "," + Optional(" ")
-    + ZeroOrMore(listElement + "," + Optional(" ")) + later
-    | ZeroOrMore(listElement + "," + Optional(" ")) + consecutives
-    | ZeroOrMore(listElement + "," + Optional(" ")) + later
-    | earlier + ZeroOrMore("," + Optional(" ") + listElement)
-    | listElement + OneOrMore("," + Optional(" ") + listElement)
+    earlier + ","
+    + ZeroOrMore(listElement + ",") + later
+    | ZeroOrMore(listElement + ",") + consecutives
+    | ZeroOrMore(listElement + ",") + later
+    | earlier + ZeroOrMore("," + listElement)
+    | listElement + OneOrMore("," + listElement)
     | consecutives
 )
 choiceList = "[" + listContent + "]"
@@ -207,10 +218,10 @@ longYearScientific = (
 # Significant digits
 significantDigitYear = (
     (year | longYearScientific | longYearSimple)
-    + Optional("S" + positiveInteger)
+    + ("S" + positiveInteger)
 )
 # Season for sub-year grouping
-extendedSeasonNumber = seasonNumber | oneOf("25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41")
+extendedSeasonNumber = oneOf("25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41")
 extendedSeason = year + "-" + extendedSeasonNumber
 """
 ------------------------------------------------------------------------------
@@ -232,9 +243,10 @@ level2Expression = (
     L2Interval
     | choiceList
     | inclusiveList
-    | internalUncertainOrApproximate
     | internalUnspecified
+    | internalUncertainOrApproximate
     | extendedSeason
+    | longYearScientific
     | significantDigitYear
 )
 # everything resolves to a 'dateTimeString'
@@ -493,19 +505,13 @@ def is_valid_interval(edtf_candidate):
         # zero '-' characters means we are matching a year
         if parts[0].count("-") == 0:
             # if from_date is unknown, we can assume the lowest possible date
-            if parts[0] == '':
+            if parts[0] in [Empty(), '..']:
                 from_date = datetime.datetime.strptime("0001", "%Y")
-            elif parts[0] == '..':
-                from_date = '..'
             else:
                 from_date = datetime.datetime.strptime(parts[0], "%Y")
         if parts[1].count("-") == 0:
             # when the to_date is open and the from_date is valid, it's valid
-            if parts[1] == '..':
-                to_date = '..'
-            elif parts[1] == '':
-                to_date == ''
-            else:
+            if not parts[1] in [Empty(), '..']:
                 to_date = datetime.datetime.strptime(parts[1], "%Y")
         # if it starts negative and ends positive, that's always True
         if start == 'neg' and end == 'pos':
@@ -516,9 +522,9 @@ def is_valid_interval(edtf_candidate):
                 return True
         # if the to_date is unknown or open, it could be any date, therefore
         elif (
-            parts[1] == ''
+            parts[1] == Empty()
             or parts[1] == '..'
-            or parts[0] == ''
+            or parts[0] == Empty()
             or parts[0] == '..'
         ):
             return True
