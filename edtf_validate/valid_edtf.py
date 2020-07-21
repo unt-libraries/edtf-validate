@@ -13,7 +13,7 @@ import calendar
 import datetime
 import re
 
-from pyparsing import Optional, oneOf, OneOrMore, ZeroOrMore, Empty
+from pyparsing import Optional, oneOf, OneOrMore, ZeroOrMore, Empty, StringStart, StringEnd
 """
 ------------------------------------------------------------------------------
 LEVEL 0 GRAMMAR START
@@ -28,8 +28,7 @@ positive_year = (
     | digit + digit + positiveDigit + digit
     | digit + digit + digit + positiveDigit
 )
-negative_year = "-" + positive_year
-year = positive_year | negative_year | "0000"
+pos_year = positive_year | "0000"
 # date
 oneThru12 = oneOf("01 02 03 04 05 06 07 08 09 10 11 12")
 oneThru13 = oneThru12 | "13"
@@ -47,13 +46,13 @@ monthDay = (
     | oneOf("04 06 09 11") + "-" + oneThru30
     | "02-" + oneThru29
 )
-yearMonth = year + "-" + month
-yearMonthDay = year + "-" + monthDay
+pos_yearMonth = pos_year + "-" + month
+pos_yearMonthDay = pos_year + "-" + monthDay
 hour = zeroThru23
 minute = zeroThru59
 second = zeroThru59
 day = oneThru31
-date = yearMonthDay | yearMonth | year
+pos_date = pos_yearMonthDay | pos_yearMonth | pos_year
 baseTime = hour + ":" + minute + ":" + second | "24:00:00"
 zoneOffsetHour = oneThru13
 zoneOffset = "Z" | (
@@ -62,13 +61,24 @@ zoneOffset = "Z" | (
     | "00:" + oneThru59
 )
 time = baseTime + Optional(zoneOffset)
-dateAndTime = date + "T" + time
-L0Interval = date + "/" + date
+dateAndTime = pos_date + "T" + time
+L0Interval = pos_date + "/" + pos_date
 """
 ------------------------------------------------------------------------------
 LEVEL 1 GRAMMAR START
 ------------------------------------------------------------------------------
 """
+# Negative years
+negative_year = "-" + positive_year
+year = positive_year | negative_year | "0000"
+yearMonth = year + "-" + month
+yearMonthDay = year + "-" + monthDay
+date = yearMonthDay | yearMonth | year
+neg_date = negative_year + "-" + monthDay | negative_year + "-" + month | negative_year
+negative_time_interval = (
+    neg_date + "T" + time
+    | neg_date
+)
 # Auxiliary Assignments for Level 1
 UASymbol = oneOf("? ~ %")
 seasonNumber = oneOf("21 22 23 24")
@@ -90,12 +100,16 @@ unspecified = (
 # L1Interval
 
 L1Interval = (
-    (dateOrSeason + UASymbol | dateOrSeason | Empty() | "..") + "/"
-    + (dateOrSeason + UASymbol | ".." | dateOrSeason)
+    neg_date + "/" + date
+    | neg_date + "/" + Optional(neg_date)
+    | date + "/" + neg_date
     | (dateOrSeason + UASymbol | dateOrSeason | "..") + "/"
-    + (dateOrSeason + UASymbol | dateOrSeason | ".." | Empty())
+    + (dateOrSeason + UASymbol | ".." | season)
+    | (dateOrSeason + UASymbol | ".." | season) + "/"
+    + (dateOrSeason + UASymbol | dateOrSeason | "..")
+    | (Empty() + "/" + (dateOrSeason + UASymbol | dateOrSeason | ".."))
+    | (dateOrSeason + UASymbol | dateOrSeason | "..") + "/" + Empty()
 )
-
 # Long Year - Simple Form
 longYearSimple = (
     "Y" + Optional("-")
@@ -116,19 +130,12 @@ IUABase = (
     )
     | year + UASymbol + "-" + month + UASymbol + Optional("-" + day)
     | year + "-" + month + UASymbol + "-" + day + UASymbol
-    | year + "-" + month + UASymbol + Optional("-" + day)
     | year + UASymbol + "-" + monthDay + UASymbol
-    | (
-        year + Optional(UASymbol)
-        + "-" + monthDay + Optional(UASymbol)
-    )
     | year + UASymbol + "-" + monthDay
     | year + UASymbol + "-" + month + "-" + day + UASymbol
     | year + UASymbol + "-" + month + UASymbol
     | yearMonth + UASymbol + "-" + day + UASymbol
     | year + UASymbol + "-" + month + "-" + UASymbol + day
-    | yearMonth + "-" + day + UASymbol
-    | year + "-" + monthDay + UASymbol
     | yearMonth + UASymbol + "-" + day
     | yearMonth + "-" + UASymbol + day
     | year + UASymbol + "-" + month
@@ -172,7 +179,10 @@ yearmonthDayWithX = (
     | yearWithX + "-" + monthDay
     | year + "-" + monthDayWithX
 )
-internalUnspecified = yearmonthDayWithX | yearMonthWithX | yearWithX
+internalUnspecified = (
+    ~(StringStart() + unspecified + StringEnd())
+    + (yearmonthDayWithX | yearMonthWithX | yearWithX)
+)
 # Auxiliary Assignments for Level 2
 dateWithInternalUncertainty = (
     internalUncertainOrApproximate | internalUnspecified
@@ -195,7 +205,7 @@ listElement = (
 listContent = (
     earlier + ","
     + ZeroOrMore(listElement + ",") + later
-    | ZeroOrMore(listElement + ",") + consecutives
+    | ZeroOrMore(listElement + ',') + consecutives
     | ZeroOrMore(listElement + ",") + later
     | earlier + ZeroOrMore("," + listElement)
     | listElement + OneOrMore("," + listElement)
@@ -229,7 +239,7 @@ GLOBAL GRAMMAR START
 ------------------------------------------------------------------------------
 """
 # level 0 consists of an interval, date and time or date
-level0Expression = L0Interval | dateAndTime | date.leaveWhitespace()
+level0Expression = L0Interval | dateAndTime | pos_date.leaveWhitespace()
 # level 1
 level1Expression = (
     L1Interval
@@ -237,6 +247,7 @@ level1Expression = (
     | uncertainOrApproxDate
     | unspecified
     | season
+    | negative_time_interval
 )
 # level 2
 level2Expression = (
@@ -288,11 +299,11 @@ def replace_season(season_date, marker):
     return '-'.join([y_part, m_part])
 
 
-U_PATTERN = re.compile(r'(-?)([\dX]{4})(-[\dX]{2})?(-[\dX]{2})?/'
+X_PATTERN = re.compile(r'(-?)([\dX]{4})(-[\dX]{2})?(-[\dX]{2})?/'
                        r'(-?)([\dX]{4})(-[\dX]{2})?(-[\dX]{2})?')
 
 
-def replace_u_start_month(month):
+def replace_X_start_month(month):
     """Find the earliest legitimate month."""
     month = month.lstrip('-')
     if month == 'XX' or month == '0X':
@@ -302,7 +313,7 @@ def replace_u_start_month(month):
     return month.replace('X', '0')
 
 
-def replace_u_end_month(month):
+def replace_X_end_month(month):
     """Find the latest legitimate month."""
     month = month.lstrip('-')
     if month == 'XX' or month == '1X':
@@ -318,7 +329,7 @@ def replace_u_end_month(month):
     return month.replace('X', '0')
 
 
-def replace_u_start_day(day):
+def replace_X_start_day(day):
     """Find the earliest legitimate day."""
     day = day.lstrip('-')
     if day == 'XX' or day == '0X':
@@ -328,7 +339,7 @@ def replace_u_start_day(day):
     return day.replace('X', '0')
 
 
-def replace_u_end_day(day, year, month):
+def replace_X_end_day(day, year, month):
     """Find the latest legitimate day."""
     day = day.lstrip('-')
     year = int(year)
@@ -364,7 +375,7 @@ def replace_u_end_day(day, year, month):
         return '20'
 
 
-def replace_u(matchobj):
+def replace_X(matchobj):
     """Break the interval into parts, and replace 'u's.
 
     pieces - [pos/neg, start_year, start_month, start_day,
@@ -378,16 +389,16 @@ def replace_u(matchobj):
         pieces[5] = pieces[5].replace('X', '9')
     # Replace "u"s in start month.
     if 'X' in pieces[2]:
-        pieces[2] = '-' + replace_u_start_month(pieces[2])
+        pieces[2] = '-' + replace_X_start_month(pieces[2])
     # Replace "u"s in end month.
     if 'X' in pieces[6]:
-        pieces[6] = '-' + replace_u_end_month(pieces[6])
+        pieces[6] = '-' + replace_X_end_month(pieces[6])
     # Replace "u"s in start day.
     if 'X' in pieces[3]:
-        pieces[3] = '-' + replace_u_start_day(pieces[3])
+        pieces[3] = '-' + replace_X_start_day(pieces[3])
     # Replace "u"s in end day.
     if 'X' in pieces[7]:
-        pieces[7] = '-' + replace_u_end_day(pieces[7], year=pieces[5],
+        pieces[7] = '-' + replace_X_end_day(pieces[7], year=pieces[5],
                                             month=pieces[6])
     return ''.join((''.join(pieces[:4]), '/', ''.join(pieces[4:])))
 
@@ -459,7 +470,7 @@ def is_valid_interval(edtf_candidate):
         # replace all 'problem' cases (unspecified, 0000 date, %, -, y)
         # break the interval into two date strings
         edtf_candidate = replace_all(edtf_candidate, interval_replacements)
-        edtf_candidate = re.sub(U_PATTERN, replace_u, edtf_candidate)
+        edtf_candidate = re.sub(X_PATTERN, replace_X, edtf_candidate)
         parts = edtf_candidate.split('/')
         # set flag for negative start date
         if parts[0].startswith("-"):
@@ -532,6 +543,8 @@ def is_valid_interval(edtf_candidate):
         elif start == 'pos' and end == 'pos':
             if from_date <= to_date and from_date and to_date:
                 return True
+            else:
+                return False
         else:
             return False
     else:
@@ -573,6 +586,10 @@ def isLevel2(edtf_candidate):
 def is_valid(edtf_candidate):
     """isValid takes a candidate date and returns if it is valid or not"""
 
+#    print('check if  islevel0: ', edtf_candidate == level0Expression)
+#    print('check islevel1: ', edtf_candidate == level1Expression)
+    print('check if islevel2: ', edtf_candidate == level2Expression)
+    print('\n check if it is neg interval: ', edtf_candidate == consecutives, "\n")
     if (
         isLevel0(edtf_candidate)
         or isLevel1(edtf_candidate)

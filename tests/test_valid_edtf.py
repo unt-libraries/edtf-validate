@@ -88,6 +88,7 @@ class TestIsValid(object):
         '1112-08-22/1112-08-2X',
         '2015-02-27/2015-02-X8',
         '2016-02-28/2016-02-X9',
+        '-2001-02-03',
     ])
     def test_valid_edtf_interval(self, date):
         assert is_valid(date)
@@ -128,23 +129,18 @@ class TestIsValid(object):
 class TestLevel0(object):
     @pytest.mark.parametrize('date', [
         '2001-02-03',
-        '-2001-02-03',
         '2008-12',
         '2008',
-        '-0999',
-        '-9999',
         '0000',
         '2001-02-03T09:30:01',
         '2004-01-01T10:10:10Z',
         '2012-10-10T10:10:10Z',
-        '-2012-10-10T10:10:10Z',
         '2004-01-01T10:10:10+05:00',
         '1964/2008',
         '2004-06/2006-08',
         '2004-02-01/2005-02-08',
         '2004-02-01/2005-02',
         '2004-02-01/2005',
-        '-2004-02-01/2005',
         '2005/2006-02',
     ])
     def test_valid_level_0(self, date):
@@ -158,6 +154,7 @@ class TestLevel0(object):
         '1863-03-29 ',
         '18 63-03-29',
         '1863-0 3-29',
+        '-1959',
     ])
     def test_invalid_level_0(self, date):
         assert not isLevel0(date)
@@ -196,13 +193,18 @@ class TestLevel1(object):
         '-2003-22',
         '2000-23',
         '2010-24',
-        '2013/2014',
+        '2004-06-11%',
+        '-1985',
+        '-1000/-0999',
+        '-2001-02-03',
+        '-2012-10-10T10:10:10Z',
+        '-2004-02-01/2005',
     ])
     def test_valid_level_1(self, date):
         assert isLevel1(date)
 
     def test_invalid_level_1(self):
-        assert not isLevel1('~2013/2014')
+        assert not isLevel1('2013/2014')
 
 
 class TestLevel2(object):
@@ -220,7 +222,6 @@ class TestLevel2(object):
         '2004?-%06',
         '?2004-06-04~',
         '2011-06-~04',
-        '2011-06-04~',
         '2011-23~',
         '-2011-23~',
         '156X-12-25',
@@ -253,11 +254,13 @@ class TestLevel2(object):
     @pytest.mark.parametrize('date', [
         '1960-06-31',
         '[1 760-01, 1760-02, 1760-12..]',
-        '196x',
-        '19xx',
-        '-19xx',
+        '[1667,1668, 1670..1672]',
+        '196X',
+        '19XX',
+        '-19XX',
         '2001-21^southernHemisphere',
         'Y170000002',
+        '-1998',
     ])
     def test_invalid_level_2(self, date):
         assert not isLevel2(date)
