@@ -196,11 +196,11 @@ consecutives = (
 earlier = ".." + date
 later = date + ".."
 listElement = (
-    dateWithInternalUncertainty
-    | uncertainOrApproxDate
-    | unspecified
-    | consecutives
-    | date
+    dateWithInternalUncertainty.leaveWhitespace()
+    | uncertainOrApproxDate.leaveWhitespace()
+    | unspecified.leaveWhitespace()
+    | consecutives.leaveWhitespace()
+    | date.leaveWhitespace()
 )
 listContent = (
     earlier + ","
