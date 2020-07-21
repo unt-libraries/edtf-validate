@@ -585,11 +585,6 @@ def isLevel2(edtf_candidate):
 
 def is_valid(edtf_candidate):
     """isValid takes a candidate date and returns if it is valid or not"""
-
-#    print('check if  islevel0: ', edtf_candidate == level0Expression)
-#    print('check islevel1: ', edtf_candidate == level1Expression)
-    print('check if islevel2: ', edtf_candidate == level2Expression)
-    print('\n check if it is neg interval: ', edtf_candidate == consecutives, "\n")
     if (
         isLevel0(edtf_candidate)
         or isLevel1(edtf_candidate)
