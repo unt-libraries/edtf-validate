@@ -529,7 +529,7 @@ def is_valid_interval(edtf_candidate):
 
 
 def isLevel0(edtf_candidate):
-    """Checks to see if the date is level 0 valid"""
+    """Checks to see if the date is a feature of level 0"""
 
     if " " not in edtf_candidate:
         result = edtf_candidate == level0Expression
@@ -539,7 +539,7 @@ def isLevel0(edtf_candidate):
 
 
 def isLevel1(edtf_candidate):
-    """Checks to see if the date is level 1 valid"""
+    """Checks to see if the date is a feature of level 1"""
 
     if " " not in edtf_candidate:
         result = edtf_candidate == level1Expression
@@ -549,7 +549,7 @@ def isLevel1(edtf_candidate):
 
 
 def isLevel2(edtf_candidate):
-    """Checks to see if the date is level 2 valid"""
+    """Checks to see if the date is a feature of level 2"""
 
     if "[" in edtf_candidate or "{" in edtf_candidate:
         result = edtf_candidate == level2Expression
@@ -558,6 +558,34 @@ def isLevel2(edtf_candidate):
     else:
         result = edtf_candidate == level2Expression
     return result
+
+
+def conformsLevel0(edtf_candidate):
+    """Checks to see if the date is level 0 valid"""
+    if isLevel0(edtf_candidate):
+        return True
+    else:
+        return False
+
+
+def conformsLevel1(edtf_candidate):
+    """Checks to see if the date is level 1 valid"""
+    if isLevel0(edtf_candidate) or isLevel1(edtf_candidate):
+        return True
+    else:
+        return False
+
+
+def conformsLevel2(edtf_candidate):
+    """Checks to see if the date is level 2 valid"""
+    if (
+        isLevel0(edtf_candidate)
+        or isLevel1(edtf_candidate)
+        or isLevel2(edtf_candidate)
+    ):
+        return True
+    else:
+        return False
 
 
 def is_valid(edtf_candidate):
