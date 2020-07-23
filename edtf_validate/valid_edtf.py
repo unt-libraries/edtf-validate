@@ -28,7 +28,7 @@ positive_year = (
     | digit + digit + positiveDigit + digit
     | digit + digit + digit + positiveDigit
 )
-pos_year = positive_year | "0000"
+non_negative_year = positive_year | "0000"
 # date
 oneThru12 = oneOf("01 02 03 04 05 06 07 08 09 10 11 12")
 oneThru13 = oneThru12 | "13"
@@ -46,13 +46,13 @@ monthDay = (
     | oneOf("04 06 09 11") + "-" + oneThru30
     | "02-" + oneThru29
 )
-pos_yearMonth = pos_year + "-" + month
-pos_yearMonthDay = pos_year + "-" + monthDay
+non_negative_yearMonth = non_negative_year + "-" + month
+non_negative_yearMonthDay = non_negative_year + "-" + monthDay
 hour = zeroThru23
 minute = zeroThru59
 second = zeroThru59
 day = oneThru31
-pos_date = pos_yearMonthDay | pos_yearMonth | pos_year
+non_negative_date = non_negative_yearMonthDay | non_negative_yearMonth | non_negative_year
 baseTime = hour + ":" + minute + ":" + second | "24:00:00"
 zoneOffsetHour = oneThru13
 zoneOffset = "Z" | (
@@ -61,8 +61,8 @@ zoneOffset = "Z" | (
     | "00:" + oneThru59
 )
 time = baseTime + Optional(zoneOffset)
-dateAndTime = pos_date + "T" + time
-L0Interval = pos_date + "/" + pos_date
+dateAndTime = non_negative_date + "T" + time
+L0Interval = non_negative_date + "/" + non_negative_date
 """
 ------------------------------------------------------------------------------
 LEVEL 1 GRAMMAR START
@@ -74,11 +74,8 @@ year = positive_year | negative_year | "0000"
 yearMonth = year + "-" + month
 yearMonthDay = year + "-" + monthDay
 date = yearMonthDay | yearMonth | year
-neg_date = negative_year + "-" + monthDay | negative_year + "-" + month | negative_year
-negative_time_interval = (
-    neg_date + "T" + time
-    | neg_date
-)
+negative_date = negative_year + "-" + monthDay | negative_year + "-" + month | negative_year
+negative_time = negative_date + "T" + time
 # Auxiliary Assignments for Level 1
 UASymbol = oneOf("? ~ %")
 seasonNumber = oneOf("21 22 23 24")
@@ -100,9 +97,7 @@ unspecified = (
 # L1Interval
 
 L1Interval = (
-    neg_date + "/" + date
-    | neg_date + "/" + Optional(neg_date)
-    | date + "/" + neg_date
+    negative_date + "/" + (date | ".." | Empty())
     | (dateOrSeason + UASymbol | dateOrSeason | "..") + "/"
     + (dateOrSeason + UASymbol | ".." | season)
     | (dateOrSeason + UASymbol | ".." | season) + "/"
@@ -121,37 +116,19 @@ LEVEL 2 GRAMMAR START
 ------------------------------------------------------------------------------
 """
 # Internal Uncertain or Approximate
-# this block of code could stand to be cleaned up a bit.
-# there are some cases where we could use Optional() instead of another OR
-IUABase = (
-    (
-        year + UASymbol + "-" + month
-        + UASymbol + "-" + day + UASymbol
-    )
-    | year + UASymbol + "-" + month + UASymbol + Optional("-" + day)
-    | year + "-" + month + UASymbol + "-" + day + UASymbol
-    | year + UASymbol + "-" + monthDay + UASymbol
-    | year + UASymbol + "-" + monthDay
-    | year + UASymbol + "-" + month + "-" + day + UASymbol
-    | year + UASymbol + "-" + month + UASymbol
-    | yearMonth + UASymbol + "-" + day + UASymbol
-    | year + UASymbol + "-" + month + "-" + UASymbol + day
-    | yearMonth + UASymbol + "-" + day
-    | yearMonth + "-" + UASymbol + day
-    | year + UASymbol + "-" + month
-    | year + "-" + UASymbol + month + UASymbol
-    | year + "-" + UASymbol + month + Optional("-" + day)
-    | year + "-" + UASymbol + month + "-" + UASymbol + day
-    | year + UASymbol + "-" + UASymbol + month + Optional("-" + day)
-    | year + UASymbol + "-" + UASymbol + monthDay
-    | UASymbol + year + "-" + UASymbol + monthDay
-    | UASymbol + year + "-" + month + "-" + UASymbol + day
-    | UASymbol + year + "-" + month + "-" + day + UASymbol
-    | UASymbol + year + "-" + month + UASymbol
+UAYear = (year + UASymbol | UASymbol + year)
+UAYearOrYear = UAYear | year
+UAMonth = (month + UASymbol | UASymbol + month)
+UAMonthOrMonth = UAMonth | month
+UADay = (day + UASymbol | UASymbol + day)
+UADayOrDay = UADay | day
+
+internalUncertainOrApproximate = (
+    UAYear + Optional("-" + UAMonthOrMonth + "-" + UADayOrDay | "-" + UAMonthOrMonth)
+    | UAYearOrYear + "-" + UAMonth + Optional("-" + UADayOrDay)
+    | UAYearOrYear + "-" + UAMonthOrMonth + "-" + UADay
     | season + UASymbol
 )
-
-internalUncertainOrApproximate = IUABase | IUABase + UASymbol
 # Internal Unspecified
 positiveDigitOrX = positiveDigit | "X"
 digitOrX = positiveDigitOrX | "0"
@@ -205,7 +182,7 @@ listElement = (
 listContent = (
     earlier + ","
     + ZeroOrMore(listElement + ",") + later
-    | ZeroOrMore(listElement + ',') + consecutives
+    | ZeroOrMore(listElement + ",") + consecutives
     | ZeroOrMore(listElement + ",") + later
     | earlier + ZeroOrMore("," + listElement)
     | listElement + OneOrMore("," + listElement)
@@ -239,7 +216,7 @@ GLOBAL GRAMMAR START
 ------------------------------------------------------------------------------
 """
 # level 0 consists of an interval, date and time or date
-level0Expression = L0Interval | dateAndTime | pos_date.leaveWhitespace()
+level0Expression = L0Interval | dateAndTime | non_negative_date.leaveWhitespace()
 # level 1
 level1Expression = (
     L1Interval
@@ -247,7 +224,8 @@ level1Expression = (
     | uncertainOrApproxDate
     | unspecified
     | season
-    | negative_time_interval
+    | negative_time
+    | negative_date
 )
 # level 2
 level2Expression = (
