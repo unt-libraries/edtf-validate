@@ -95,9 +95,8 @@ unspecified = (
     | yearWithOneOrTwoUnspecifedDigits
 )
 # L1Interval
-
 L1Interval = (
-    negative_date + "/" + (date | ".." | Empty())
+    negative_date + "/" + (date)
     | (dateOrSeason + UASymbol | dateOrSeason | "..") + "/"
     + (dateOrSeason + UASymbol | ".." | season)
     | (dateOrSeason + UASymbol | ".." | season) + "/"
@@ -124,10 +123,12 @@ UADay = (day + UASymbol | UASymbol + day)
 UADayOrDay = UADay | day
 
 internalUncertainOrApproximate = (
-    UAYear + Optional("-" + UAMonthOrMonth + "-" + UADayOrDay | "-" + UAMonthOrMonth)
-    | UAYearOrYear + "-" + UAMonth + Optional("-" + UADayOrDay)
-    | UAYearOrYear + "-" + UAMonthOrMonth + "-" + UADay
-    | season + UASymbol
+    ~(StringStart() + uncertainOrApproxDate + StringEnd()) + (
+        UAYear + Optional("-" + UAMonthOrMonth + "-" + UADayOrDay | "-" + UAMonthOrMonth)
+        | UAYearOrYear + "-" + UAMonth + Optional("-" + UADayOrDay)
+        | UAYearOrYear + "-" + UAMonthOrMonth + "-" + UADay
+        | season + UASymbol
+    )
 )
 # Internal Unspecified
 positiveDigitOrX = positiveDigit | "X"
@@ -180,8 +181,7 @@ listElement = (
     | date.leaveWhitespace()
 )
 listContent = (
-    earlier + ","
-    + ZeroOrMore(listElement + ",") + later
+    earlier + "," + ZeroOrMore(listElement + ",") + later
     | ZeroOrMore(listElement + ",") + consecutives
     | ZeroOrMore(listElement + ",") + later
     | earlier + ZeroOrMore("," + listElement)
@@ -200,7 +200,6 @@ L2Interval = (
 positiveInteger = positiveDigit + ZeroOrMore(digit)
 longYearScientific = (
     "Y" + Optional("-") + positiveInteger + "E" + positiveInteger
-    + Optional("S" + positiveInteger)
 )
 # Significant digits
 significantDigitYear = (
@@ -235,8 +234,8 @@ level2Expression = (
     | internalUnspecified
     | internalUncertainOrApproximate
     | extendedSeason
-    | longYearScientific
     | significantDigitYear
+    | longYearScientific
 )
 # everything resolves to a 'dateTimeString'
 dateTimeString = level2Expression | level1Expression | level0Expression
@@ -301,9 +300,9 @@ def replace_X_end_month(month):
     if month == '0X':
         return '09'
     if month[1] in ['1', '2']:
-        # 'u1' or 'u2'
+        # 'X1' or 'X2'
         return month.replace('X', '1')
-    # Otherwise it should match r'u[3-9]'.
+    # Otherwise it should match r'X[3-9]'.
     return month.replace('X', '0')
 
 
@@ -336,10 +335,10 @@ def replace_X_end_day(day, year, month):
         else:
             # It is February, not a leap year, day ends in 9.
             return '19'
-    # 'u2' 'u3' 'u4' 'u5' 'u6' 'u7' 'u8'
+    # 'X2' 'X3' 'X4' 'X5' 'X6' 'X7' 'X8'
     if 1 < int(day[1]) < 9:
         return day.replace('X', '2')
-    # 'u0' 'u1'
+    # 'X0' 'X1'
     if day == 'X1':
         if calendar.monthrange(year, month)[1] == 31:
             # See if the month has a 31st.
@@ -354,27 +353,27 @@ def replace_X_end_day(day, year, month):
 
 
 def replace_X(matchobj):
-    """Break the interval into parts, and replace 'u's.
+    """Break the interval into parts, and replace 'X's.
 
     pieces - [pos/neg, start_year, start_month, start_day,
               pos/neg, end_year, end_month, end_day]
     """
     pieces = list(matchobj.groups(''))
-    # Replace "u"s in start and end years.
+    # Replace "X"s in start and end years.
     if 'X' in pieces[1]:
         pieces[1] = pieces[1].replace('X', '0')
     if 'X' in pieces[5]:
         pieces[5] = pieces[5].replace('X', '9')
-    # Replace "u"s in start month.
+    # Replace "X"s in start month.
     if 'X' in pieces[2]:
         pieces[2] = '-' + replace_X_start_month(pieces[2])
-    # Replace "u"s in end month.
+    # Replace "X"s in end month.
     if 'X' in pieces[6]:
         pieces[6] = '-' + replace_X_end_month(pieces[6])
-    # Replace "u"s in start day.
+    # Replace "X"s in start day.
     if 'X' in pieces[3]:
         pieces[3] = '-' + replace_X_start_day(pieces[3])
-    # Replace "u"s in end day.
+    # Replace "X"s in end day.
     if 'X' in pieces[7]:
         pieces[7] = '-' + replace_X_end_day(pieces[7], year=pieces[5],
                                             month=pieces[6])
