@@ -96,7 +96,7 @@ unspecified = (
 )
 # L1Interval
 L1Interval = (
-    negative_date + "/" + (date)
+    negative_date + "/" + date
     | (dateOrSeason + UASymbol | dateOrSeason | "..") + "/"
     + (dateOrSeason + UASymbol | ".." | season)
     | (dateOrSeason + UASymbol | ".." | season) + "/"
@@ -191,11 +191,11 @@ listContent = (
 choiceList = "[" + listContent + "]"
 inclusiveList = "{" + listContent + "}"
 # L2Interval
-L2Interval = (
+L2Interval = (~(StringStart() + L1Interval + StringEnd()) + (
     dateWithInternalUncertainty + "/" + dateWithInternalUncertainty
     | dateOrSeason + "/" + dateWithInternalUncertainty
     | dateWithInternalUncertainty + "/" + dateOrSeason
-)
+))
 # Long Year - Scientific Form
 positiveInteger = positiveDigit + ZeroOrMore(digit)
 longYearScientific = (
