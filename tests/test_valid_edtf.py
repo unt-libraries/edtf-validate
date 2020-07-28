@@ -1,7 +1,7 @@
 import pytest
 
-from edtf_validate.valid_edtf import (is_valid_interval, is_valid, isLevel0,
-                                      isLevel1, isLevel2)
+from edtf_validate.valid_edtf import (is_valid_interval, is_valid, isLevel0, isLevel1,
+                                      isLevel2, conformsLevel0, conformsLevel1, conformsLevel2)
 
 
 class TestIsValidInterval(object):
@@ -307,3 +307,69 @@ class TestLevel2(object):
     ])
     def test_invalid_level_2(self, date):
         assert not isLevel2(date)
+
+    @pytest.mark.parametrize('date', [
+        '1985',
+        '2004/2005',
+        '1985-04-12',
+        '1985-04-12T23:20:30Z',
+        '1985-04-12T23:20:30+04:30'
+    ])
+    def test_valid_conformsLevel0(self, date):
+        assert conformsLevel0(date)
+
+    @pytest.mark.parametrize('date', [
+        '-1984',
+        '19XX',
+        'Y-170000002',
+        '2001-21',
+        '1984?',
+        '1985-04/..',
+        '1985/',
+    ])
+    def test_invalid_conformsLevel0(self, date):
+        assert not conformsLevel0(date)
+
+    @pytest.mark.parametrize('date', [
+        '-1985',
+        '/1985-04-12',
+        '../1985-04-12',
+        '2004-XX',
+        '2004-06~',
+        '2001-21',
+        'Y-170000002',
+        '1985-04-12T23:20:30Z',
+        '2004-06/2006-08',
+        '1985-04'
+    ])
+    def test_valid_conformsLevel1(self, date):
+        assert conformsLevel1(date)
+
+    @pytest.mark.parametrize('date', [
+        'Y-17E7',
+        '2001-34',
+        '156X-12-25'
+    ])
+    def test_invalid_conformsLevel1(self, date):
+        assert not conformsLevel1(date)
+
+    @pytest.mark.parametrize('date', [
+        '-1985',
+        '/1985-04-12',
+        '../1985-04-12',
+        '2004-XX',
+        '2004-06~',
+        '2001-21',
+        'Y-170000002',
+        '1985-04-12T23:20:30Z',
+        '2004-06/2006-08',
+        '1985-04',
+        '156X-12-25',
+        '{1667,1668,1670..1672}',
+        '[1667,1668,1670..1672]',
+    ])
+    def test_valid_conformsLevel2(self, date):
+        assert conformsLevel2(date)
+
+    def test_invalid_conformsLevel2(self):
+        assert not conformsLevel2('[1667,1668, 1670..1672]')
