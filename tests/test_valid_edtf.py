@@ -3,6 +3,68 @@ from itertools import chain
 from edtf_validate.valid_edtf import (is_valid_interval, is_valid, isLevel0, isLevel1,
                                       isLevel2, conformsLevel0, conformsLevel1, conformsLevel2)
 
+L0_Intervals = [
+    '1964/2008',
+    '2004-06/2006-08',
+    '2004-02-01/2005-02-08',
+    '2004-02-01/2005-02',
+    '2004-02-01/2005',
+    '2005/2006-02',
+]
+
+L1_Intervals = [
+    '-1000/-0999',
+    '-2004-02-01/2005',
+    '2019-12/2020%',
+    '/2006',
+    '2004-06-01/',
+    '-2004-06-01/',
+    '1984~/2004-06',
+    '1984/2004-06~',
+    '1984~/2004~',
+    '-1984?/2004%',
+    '1984-06?/2004-08?',
+    '1984-06-02?/2004-08-08~',
+    '1984-06-02?/',
+    '2003/2004-06-11%',
+    '1985-04-12/',
+    '1985-04/',
+    '1985/',
+    '/1985-04-12',
+    '/1985-04',
+    '/1985',
+    '1985-04-12/..',
+    '1985-04/..',
+    '1985/..',
+    '-2004-06-01/..',
+    '2004-01-01/..',
+    '../2004-02-01',
+    '../1985-04-12',
+    '../1985-04',
+    '../1985',
+    '-1985-04-12/',
+    '-1985-04/..',
+    '-1985/',
+]
+
+L2_Intervals = [
+    '2004-06-~01/2004-06-~20',
+    '2004-06-~01/2004-06-~20',
+    '-2004-06-?01/2006-06-~20',
+    '-2005-06-%01/2006-06-~20',
+    '2004-06-XX/2004-07-03',
+    '2003-06-25/2004-XX-03',
+    '2019-12/%2020',
+    '2004-06-~01/2004-06-~20',
+    '1984?-06/2004-08?',
+    '-1984-?06-02/2004-08-08~',
+    '1984-06-?02/2004-06-11%',
+    '2019-12/~2020',
+    '2003-06-11%/2004-%06',
+    '2004-06~/2004-06-%11',
+    '1984?/2004~-06',
+]
+
 Level0 = [
     '1985-04-12',
     '1985-04',
@@ -12,13 +74,7 @@ Level0 = [
     '1985-04-12T23:20:30Z',
     '1985-04-12T23:20:30-04',
     '1985-04-12T23:20:30+04:30',
-    '1964/2008',
-    '2004-06/2006-08',
-    '2004-02-01/2005-02-08',
-    '2004-02-01/2005-02',
-    '2004-02-01/2005',
-    '2005/2006-02',
-]
+] + L0_Intervals
 
 Level1 = [
     'Y170000002',
@@ -40,32 +96,11 @@ Level1 = [
     '-2004-XX',
     '-1985-04-XX',
     '-1985-XX-XX',
-    '1985-04-12/',
-    '1985-04/',
-    '1985/',
-    '/1985-04-12',
-    '/1985-04',
-    '/1985',
-    '1985-04-12/..',
-    '1985-04/..',
-    '1985/..',
-    '../1985-04-12',
-    '../1985-04',
-    '../1985',
-    '-1985-04-12/',
-    '-1985-04/..',
-    '-1985/',
     '-1985-04-12T23:20:30',
     '-1985-04-12T23:20:30Z',
     '-1985-04-12T23:20:30-04',
     '-1985-04-12T23:20:30+04:30',
-    '-1964/2008',
-    '-2004-06/2006-08',
-    '-2004-02-01/2005-02-08',
-    '-2004-02-01/2005-02',
-    '-2004-02-01/2005',
-    '-2005/2006-02',
-]
+] + L1_Intervals
 
 Level2 = [
     'Y-17E7',
@@ -97,10 +132,14 @@ Level2 = [
     '[..1760-12-03]',
     '[1760-12..]',
     '[1760-01,-1760-02,1760-12..]',
+    '[-1740-02-12..-1200-01-29]',
+    '[-1890-05..-1200-01]',
     '[-1667,1760-12]',
     '[..1984]',
     '{-1667,1668,1670..1672}',
     '{1960,-1961-12}',
+    '{-1640-06..-1200-01}',
+    '{-1740-02-12..-1200-01-29}',
     '{..1984}',
     '2004-06~-11',
     '2004?-06-11',
@@ -118,17 +157,15 @@ Level2 = [
     '1XXX-XX',
     '1XXX-12',
     '1984-1X',
+    '20X0-10-02',
+    '1X99-01-XX',
     '-156X-12-25',
     '-15XX-12-25',
     '-XXXX-12-XX',
     '-1XXX-XX',
     '-1XXX-12',
     '-1984-1X',
-    '2004-06-~01/2004-06-~20',
-    '2004-06-~01/2004-06-~20',
-    '-2004-06-?01/2006-06-~20',
-    '-2005-06-%01/2006-06-~20',
-]
+] + L2_Intervals
 
 invalid_edtf_dates = [
     '1863- 03-29',
@@ -147,9 +184,11 @@ invalid_edtf_dates = [
     '+2006%',
     'NONE/',
     '2000/12-12',
+    '2005-07-25T10:10:10Z/2006-01-01T10:10:10Z',
+    '',
 ]
 
-invalid_edtf_interval = [
+invalid_edtf_intervals = [
     '2012/2013/1234/55BULBASAUR',
     '2012///4444',
     '2012\\2013',
@@ -167,13 +206,17 @@ invalid_edtf_interval = [
     '0000-02/0000',
 ]
 
-invalid_edtf_datetime = [
+invalid_edtf_datetimes = [
     '1985-04-12T23:20:30z',
     '1985-04-12t23:20:30',
     '2012-10-10T10:10:1',
     '2012-10-10T1:10:10',
     '2012-10-10T10:1:10',
     '2012-10-10T10:10:10Z10',
+    '2012-10-10T10:70:10Z10',
+    '2012-10-10T10:70:10Z15',
+    '2012-10-10T10:70:10Z00:62',
+    '2012-10-10T27:70:10Z10'
 ]
 
 L0_L1 = list(chain(Level0, Level1))
@@ -183,32 +226,23 @@ L0_L1_L2 = list(chain(Level0, Level1, Level2))
 
 
 class TestIsValidInterval(object):
-    @pytest.mark.parametrize('date', invalid_edtf_interval)
+    @pytest.mark.parametrize('date', invalid_edtf_intervals)
     def test_interval_malformed(self, date):
         # is_valid_interval should fail if not 8601 extended interval
         assert not is_valid_interval(date)
 
+    @pytest.mark.parametrize('date', chain(L0_Intervals, L1_Intervals, L2_Intervals))
+    def test_valid_intervals(self, date):
+        assert is_valid_interval(date)
+
 
 class TestIsValid(object):
-    @pytest.mark.parametrize('date', invalid_edtf_datetime)
-    def test_invalid_edtf_datetime(self, date):
-        # is_valid should fail if match doesn't exist
-        assert not is_valid(date)
-
-    def test_valid_edtf_datetime(self):
-        assert is_valid('2012-10-10T10:10:10Z')
-
     @pytest.mark.parametrize('date', L0_L1_L2)
-    def test_valid_edtf_interval(self, date):
+    def test_valid_edtf_all(self, date):
         assert is_valid(date)
 
-    @pytest.mark.parametrize('date', invalid_edtf_interval)
-    def test_invalid_edtf_interval(self, date):
-        assert not is_valid(date)
-
-    @pytest.mark.parametrize('date', invalid_edtf_dates)
-    def test_invalid_edtf_date_match(self, date):
-        # is_valid should fail if match doesn't exist
+    @pytest.mark.parametrize('date', chain(invalid_edtf_dates, invalid_edtf_datetimes))
+    def test_invalid_edtf_all(self, date):
         assert not is_valid(date)
 
 
