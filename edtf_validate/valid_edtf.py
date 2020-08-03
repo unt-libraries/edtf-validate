@@ -465,9 +465,15 @@ def is_valid_interval(edtf_candidate):
             return zero_year_special_case(parts[0], parts[1], start, end)
         # 2 '-' characters means we are matching year-month-day
         if parts[0].count("-") == 2:
-            from_date = datetime.datetime.strptime(parts[0], "%Y-%m-%d")
+            try:
+                from_date = datetime.datetime.strptime(parts[0], "%Y-%m-%d")
+            except ValueError:
+                return False
         if parts[1].count("-") == 2:
-            to_date = datetime.datetime.strptime(parts[1], "%Y-%m-%d")
+            try:
+                to_date = datetime.datetime.strptime(parts[1], "%Y-%m-%d")
+            except ValueError:
+                return False
         # handle special case of same year season/season range due to
         # the overlap of the months we are designating for the seasons
         if parts[0].count("-") == 1 and parts[1].count("-") == 1:
