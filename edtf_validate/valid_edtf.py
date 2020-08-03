@@ -55,11 +55,11 @@ day = oneThru31
 non_negative_date = non_negative_yearMonthDay | non_negative_yearMonth | non_negative_year
 baseTime = hour + ":" + minute + ":" + second | "24:00:00"
 zoneOffsetHour = oneThru13
-zoneOffset = "Z" | (
-    oneOf("+ -") + zoneOffsetHour + Optional(":" + minute)
+zoneOffset = "Z" | (oneOf("+ -") + (
+    zoneOffsetHour + Optional(":" + minute)
     | "14:00"
     | "00:" + oneThru59
-)
+))
 time = baseTime + Optional(zoneOffset)
 dateAndTime = non_negative_date + "T" + time
 L0Interval = non_negative_date + "/" + non_negative_date
