@@ -39,13 +39,13 @@ What exactly does edtf-validate do?
 This program will:
 
 * Determine if a string is valid EDTF according to the specifications provided by the Library of Congress.
-* Allow the user to test if a date is a feature of each level of EDTF.
-  ie. '1964/2008' is a feature of level 0 rules, and '1964~/2008~' is a feature of Level1.
-* Allow the user to test if a date is valid for each level of EDTF.
-  ie. '2014' is a feature of Level 0 and valid for it, but also valid in Level 1 and Level 2 as all EDTF levels validate dates of itself and levels below it.
-  Another example, '2001-25' is a feature of Level 2 hence valid for Level 2, but it is not a valid date in Level 0 and Level 1.
+* Allow the user to test if a date is a feature of each level of EDTF using `isLevel*` functions.
+  i.e. '1964/2008' is a feature introduced in Level 0 rules, and '1964~/2008~' is a feature introduced in Level1.
+* Allow the user to test if a date is valid for each level of EDTF using `conformsLevel*` functions.
+  i.e. '2014' is a feature introduced in Level 0 and valid for it, but also valid in Level 1 and Level 2 as all EDTF levels validate dates of itself and levels below it.
+  Another example, '2001-25' is a feature introduced in Level 2 hence valid for Level 2, but it is not a valid date in Level 0 and Level 1.
 
-If you're confused what exactly the different levels of EDTF validation implicate, you can read about it in exhaustive detail [here](http://www.loc.gov/standards/datetime/pre-submission.html).
+If you're confused what exactly the different levels of EDTF validation implicate, you can read about it in exhaustive detail [here](https://www.loc.gov/standards/datetime).
 
 
 Installation
@@ -77,4 +77,5 @@ The edtf-validate was developed at the UNT Libraries and has been worked on by a
 
 [Gio Gottardi](https://github.com/somexpert)
 
+[Madhulika Bayyavarapu](https://github.com/madhulika95b)
 If you have questions about the project feel free to contact Mark Phillips at mark.phillips@unt.edu.
