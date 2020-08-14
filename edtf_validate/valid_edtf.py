@@ -4,7 +4,7 @@ valid_edtf.py is a python commandline tool that takes as input a date/time
 string and returns either true or false determined by whether or not the
 given input complies with extended date time format level 0, 1, and 2
 Information about the extended date time format standard can be found here:
-http://www.loc.gov/standards/datetime/pre-submission.html
+https://www.loc.gov/standards/datetime/edtf.html
 """
 from __future__ import print_function
 
