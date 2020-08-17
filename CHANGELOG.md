@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+2.0.0
+=====
+
+* Updated from draft specification to official Extended Date/Time Format (EDTF) Specification released February 2019 ([issue #22](https://github.com/unt-libraries/edtf-validate/issues/22)).
+* Added `conformsLevel*` functionality ([issue #24](https://github.com/unt-libraries/edtf-validate/issues/24)).
+* Added '+/-' to fix a bug in `zoneOffset` to allow datetime ahead or behind UTC ([issue #28](https://github.com/unt-libraries/edtf-validate/issues/28)).
+* Fixed `ValueError` in `is_valid_interval` when invalid datetime patterns are given ([issue #27](https://github.com/unt-libraries/edtf-validate/issues/27)).
 
 1.1.1
 =====

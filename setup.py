@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name='edtf-validate',
-    version='1.1.0',
+    version='2.0.0',
     author='Mark Phillips',
     author_email='mark.phillips@unt.edu',
     packages=['edtf_validate'],
