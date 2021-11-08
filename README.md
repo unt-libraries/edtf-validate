@@ -1,7 +1,7 @@
 edtf-validate
 =========================
 [![PyPI](https://img.shields.io/pypi/v/edtf-validate.svg)](https://pypi.python.org/pypi/edtf-validate)
-[![Build Status](https://travis-ci.org/unt-libraries/edtf-validate.svg?branch=master)](https://travis-ci.org/unt-libraries/edtf-validate)
+[![Build Status](https://github.com/unt-libraries/edtf-validate/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/unt-libraries/edtf-validate/actions)
 
 Valid EDTF provides validity testing against levels 0-2 of the official [EDTF Specification](https://www.loc.gov/standards/datetime/edtf.html) released February 2019.
 You might find it most useful for tasks involving date validation and comparison. Typical usage often looks like this:
