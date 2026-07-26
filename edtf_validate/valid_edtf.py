@@ -13,13 +13,13 @@ import calendar
 import datetime
 import re
 
-from pyparsing import Optional, oneOf, OneOrMore, ZeroOrMore, Empty, StringStart, StringEnd
+from pyparsing import Optional, one_of, OneOrMore, ZeroOrMore, Empty, StringStart, StringEnd
 """
 ------------------------------------------------------------------------------
 LEVEL 0 GRAMMAR START
 ------------------------------------------------------------------------------
 """
-positiveDigit = oneOf("1 2 3 4 5 6 7 8 9")
+positiveDigit = one_of("1 2 3 4 5 6 7 8 9")
 digit = positiveDigit | "0"
 # year definition
 positive_year = (
@@ -30,20 +30,20 @@ positive_year = (
 )
 non_negative_year = positive_year | "0000"
 # date
-oneThru12 = oneOf("01 02 03 04 05 06 07 08 09 10 11 12")
+oneThru12 = one_of("01 02 03 04 05 06 07 08 09 10 11 12")
 oneThru13 = oneThru12 | "13"
-oneThru23 = oneThru13 | oneOf("14 15 16 17 18 19 20 21 22 23")
+oneThru23 = oneThru13 | one_of("14 15 16 17 18 19 20 21 22 23")
 zeroThru23 = "00" | oneThru23
-oneThru29 = oneThru23 | oneOf("24 25 26 27 28 29")
+oneThru29 = oneThru23 | one_of("24 25 26 27 28 29")
 oneThru30 = oneThru29 | "30"
 oneThru31 = oneThru30 | "31"
-oneThru59 = oneThru31 | oneOf("32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 \
+oneThru59 = oneThru31 | one_of("32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 \
     47 48 49 50 51 52 53 54 55 56 57 58 59")
 zeroThru59 = "00" | oneThru59
 month = oneThru12
 monthDay = (
-    oneOf("01 03 05 07 08 10 12") + "-" + oneThru31
-    | oneOf("04 06 09 11") + "-" + oneThru30
+    one_of("01 03 05 07 08 10 12") + "-" + oneThru31
+    | one_of("04 06 09 11") + "-" + oneThru30
     | "02-" + oneThru29
 )
 non_negative_yearMonth = non_negative_year + "-" + month
@@ -55,7 +55,7 @@ day = oneThru31
 non_negative_date = non_negative_yearMonthDay | non_negative_yearMonth | non_negative_year
 baseTime = hour + ":" + minute + ":" + second | "24:00:00"
 zoneOffsetHour = oneThru13
-zoneOffset = "Z" | (oneOf("+ -") + (
+zoneOffset = "Z" | (one_of("+ -") + (
     zoneOffsetHour + Optional(":" + minute)
     | "14:00"
     | "00:" + oneThru59
@@ -77,8 +77,8 @@ date = yearMonthDay | yearMonth | year
 negative_date = negative_year + "-" + monthDay | negative_year + "-" + month | negative_year
 negative_time = negative_date + "T" + time
 # Auxiliary Assignments for Level 1
-UASymbol = oneOf("? ~ %")
-seasonNumber = oneOf("21 22 23 24")
+UASymbol = one_of("? ~ %")
+seasonNumber = one_of("21 22 23 24")
 season = year + "-" + seasonNumber
 dateOrSeason = season | date
 # uncertain Or Approximate Date
@@ -140,7 +140,7 @@ yearWithX = (
     | Optional("-") + digitOrX + digitOrX + digitOrX + "X"
 )
 monthWithX = "X" + digitOrX | "0X" | "1X"
-oneThru3 = oneOf("1 2 3")
+oneThru3 = one_of("1 2 3")
 dayWithX = "X" + digitOrX | oneThru3 + "X" | "0X"
 monthDayWithX = (
     monthWithX + "-" + dayWithX
@@ -174,11 +174,11 @@ consecutives = (
 earlier = ".." + date
 later = date + ".."
 listElement = (
-    dateWithInternalUncertainty.leaveWhitespace()
-    | uncertainOrApproxDate.leaveWhitespace()
-    | unspecified.leaveWhitespace()
-    | consecutives.leaveWhitespace()
-    | date.leaveWhitespace()
+    dateWithInternalUncertainty.leave_whitespace()
+    | uncertainOrApproxDate.leave_whitespace()
+    | unspecified.leave_whitespace()
+    | consecutives.leave_whitespace()
+    | date.leave_whitespace()
 )
 listContent = (
     earlier + "," + ZeroOrMore(listElement + ",") + later
@@ -207,7 +207,7 @@ significantDigitYear = (
     + ("S" + positiveInteger)
 )
 # Season for sub-year grouping
-extendedSeasonNumber = oneOf("25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41")
+extendedSeasonNumber = one_of("25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41")
 extendedSeason = year + "-" + extendedSeasonNumber
 """
 ------------------------------------------------------------------------------
@@ -215,7 +215,7 @@ GLOBAL GRAMMAR START
 ------------------------------------------------------------------------------
 """
 # level 0 consists of an interval, date and time or date
-level0Expression = L0Interval | dateAndTime | non_negative_date.leaveWhitespace()
+level0Expression = L0Interval | dateAndTime | non_negative_date.leave_whitespace()
 # level 1
 level1Expression = (
     L1Interval
