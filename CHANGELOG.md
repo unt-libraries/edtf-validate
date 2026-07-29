@@ -5,6 +5,7 @@ x.x.x
 -----
 * Drop testing for now unsupported Python 2.7, 3.4, 3.5.
 * Add testing for Python 3.8, 3.9.
+* Replace deprecated pyparsing `oneOf`/`leaveWhitespace` calls with `one_of`/`leave_whitespace` to support Python 3.11 and modern pyparsing without deprecation warnings.
 
 2.0.0
 =====
