@@ -6,6 +6,11 @@ edtf-validate
 Valid EDTF provides validity testing against levels 0-2 of the official [EDTF Specification](https://www.loc.gov/standards/datetime/edtf.html) released February 2019.
 You might find it most useful for tasks involving date validation and comparison. Typical usage often looks like this:
 
+## System Requirements
+* Python 3.10 - 3.14
+
+## How To Use
+
 ```python
 >>> from edtf_validate.valid_edtf import is_valid, isLevel2
 >>> is_valid('2015-03-05')

@@ -1,7 +1,15 @@
 Change Log
 ==========
 
-x.x.x
+4.0.0
+-----
+* Add support for Python Python 3.10 - 3.14
+* Drop support for Python >= 3.9
+* Transition setup.py to pyproject
+* Removed print_function from __future__ import.
+
+
+3.0.0
 -----
 * Drop testing for now unsupported Python 2.7, 3.4, 3.5.
 * Add testing for Python 3.8, 3.9.

@@ -1,0 +1,67 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "edtf-validate"
+description = "Extended Date Time Format Validation"
+readme = "README.md"
+version = "4.0.0"
+keywords=["edtf", "extended", "datetime", "validate"]
+requires-python = ">=3.10"
+license = { text = "LICENSE.txt" }
+authors = [
+  {name = "University of North Texas Libraries", email = "mark.phillips@unt.edu"}
+]
+classifiers = [
+    "Natural Language :: English",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+dependencies = [
+    "pyparsing~=3.3.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/unt-libraries/edtf-validate"
+Repository = "https://github.com/unt-libraries/edtf-validate.git"
+
+[project.optional-dependencies]
+test = [
+    "pytest~=9.0.3",
+    "ruff~=0.15.9",
+]
+
+[tool.ruff]
+line-length = 99
+target-version = "py314"
+
+[tool.ruff.format]
+quote-style = "single"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "UP"]
+
+[tool.tox]
+legacy_tox_ini = """
+    [tox]
+    envlist =
+        py{310,311,312,313,314}
+        ruff
+
+    [testenv]
+    extras =
+        test
+    commands = 
+        pytest
+
+    [testenv:ruff]
+    deps =
+        ruff
+    commands =
+        ruff check
+"""
