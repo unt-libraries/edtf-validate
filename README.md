@@ -12,7 +12,7 @@ You might find it most useful for tasks involving date validation and comparison
 ## How To Use
 
 ```python
->>> from edtf_validate.valid_edtf import is_valid, isLevel2
+>>> from edtf_validate.valid_edtf import is_valid, isLevel2, conformsLevel1
 >>> is_valid('2015-03-05')
 True
 >>> is_valid('Jan 12, 1990')
