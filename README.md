@@ -56,12 +56,11 @@ If you're confused what exactly the different levels of EDTF validation implicat
 Installation
 ------------
 
-The easiest way to install is through pip. To use pip to install edtf-validate, along with all the dependencies, use:
+You can install this project as a package through Github.
 
 ```console
-$ pip install edtf-validate
+$ pip install git+https://github.com/unt-libraries/edtf-validate.git
 ```
-
 
 License
 -------
@@ -74,13 +73,11 @@ Acknowledgements
 
 The edtf-validate was developed at the UNT Libraries and has been worked on by a number of developers over the years including:
 
-[Joey Liechty](https://github.com/yeahdef)
+* [Joey Liechty](https://github.com/yeahdef)
+* [Lauren Ko](https://github.com/ldko) 
+* [Mark Phillips](https://github.com/vphill)
+* [Gio Gottardi](https://github.com/somexpert)
+* [Madhulika Bayyavarapu](https://github.com/madhulika95b)
+* [Trey Clark](https://github.com/clarktr1)
 
-[Lauren Ko](https://github.com/ldko) 
-
-[Mark Phillips](https://github.com/vphill)
-
-[Gio Gottardi](https://github.com/somexpert)
-
-[Madhulika Bayyavarapu](https://github.com/madhulika95b)
 If you have questions about the project feel free to contact Mark Phillips at mark.phillips@unt.edu.

@@ -3,9 +3,9 @@ Change Log
 
 4.0.0
 -----
-* Add support for Python Python 3.10 - 3.14
-* Drop support for Python >= 3.9
-* Transition setup.py to pyproject
+* Add support for Python Python 3.10 - 3.14.
+* Drop support and tests for Python <= 3.9.
+* Transition from setup.py to pyproject.toml.
 * Removed print_function from __future__ import.
 
 
