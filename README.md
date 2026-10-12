@@ -62,6 +62,31 @@ You can install this project as a package through Github.
 $ pip install git+https://github.com/unt-libraries/edtf-validate.git
 ```
 
+Testing
+-------
+
+Install test dependencies
+```console
+$ pip install .'[test]'
+```
+
+Run unit tests
+```console
+$ pytest
+```
+
+Run the linter
+```console
+$ ruff check .
+```
+
+To run the tests against every supported Python version you can install and use [tox](https://tox.wiki/):
+
+```console
+$ pip install tox
+$ tox
+```
+
 License
 -------
 
