@@ -298,7 +298,7 @@ L1_L2 = list(chain(Level1, Level2))
 L0_L1_L2 = list(chain(Level0, Level1, Level2))
 
 
-class TestIsValidInterval(object):
+class TestIsValidInterval:
     @pytest.mark.parametrize('date', invalid_edtf_intervals)
     def test_interval_malformed(self, date):
         # is_valid_interval should fail if not 8601 extended interval
@@ -309,7 +309,7 @@ class TestIsValidInterval(object):
         assert is_valid_interval(date)
 
 
-class TestIsValid(object):
+class TestIsValid:
     @pytest.mark.parametrize('date', L0_L1_L2)
     def test_valid_edtf_all(self, date):
         assert is_valid(date)
@@ -320,7 +320,7 @@ class TestIsValid(object):
         assert not is_valid(date)
 
 
-class TestLevel0(object):
+class TestLevel0:
     @pytest.mark.parametrize('date', Level0)
     def test_valid_level_0(self, date):
         assert isLevel0(date)
@@ -330,7 +330,7 @@ class TestLevel0(object):
         assert not isLevel0(date)
 
 
-class TestLevel1(object):
+class TestLevel1:
     @pytest.mark.parametrize('date', Level1)
     def test_valid_level_1(self, date):
         assert isLevel1(date)
@@ -340,7 +340,7 @@ class TestLevel1(object):
         assert not isLevel1(date)
 
 
-class TestLevel2(object):
+class TestLevel2:
     @pytest.mark.parametrize('date', Level2)
     def test_valid_level_2(self, date):
         assert isLevel2(date)
@@ -350,7 +350,7 @@ class TestLevel2(object):
         assert not isLevel2(date)
 
 
-class TestConformsLevel0(object):
+class TestConformsLevel0:
     @pytest.mark.parametrize('date', Level0)
     def test_valid_conformsLevel0(self, date):
         assert conformsLevel0(date)
@@ -360,7 +360,7 @@ class TestConformsLevel0(object):
         assert not conformsLevel0(date)
 
 
-class TestConformsLevel1(object):
+class TestConformsLevel1:
     @pytest.mark.parametrize('date', L0_L1)
     def test_valid_conformsLevel1(self, date):
         assert conformsLevel1(date)
@@ -370,7 +370,7 @@ class TestConformsLevel1(object):
         assert not conformsLevel1(date)
 
 
-class TestConformsLevel2(object):
+class TestConformsLevel2:
     @pytest.mark.parametrize('date', L0_L1_L2)
     def test_valid_conformsLevel2(self, date):
         assert conformsLevel2(date)

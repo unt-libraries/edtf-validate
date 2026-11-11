@@ -6,8 +6,13 @@ edtf-validate
 Valid EDTF provides validity testing against levels 0-2 of the official [EDTF Specification](https://www.loc.gov/standards/datetime/edtf.html) released February 2019.
 You might find it most useful for tasks involving date validation and comparison. Typical usage often looks like this:
 
+## System Requirements
+* Python 3.10 - 3.14
+
+## How To Use
+
 ```python
->>> from edtf_validate.valid_edtf import is_valid, isLevel2
+>>> from edtf_validate.valid_edtf import is_valid, isLevel2, conformsLevel1
 >>> is_valid('2015-03-05')
 True
 >>> is_valid('Jan 12, 1990')
@@ -51,12 +56,36 @@ If you're confused what exactly the different levels of EDTF validation implicat
 Installation
 ------------
 
-The easiest way to install is through pip. To use pip to install edtf-validate, along with all the dependencies, use:
+You can install this project as a package through Github.
 
 ```console
-$ pip install edtf-validate
+$ pip install git+https://github.com/unt-libraries/edtf-validate.git
 ```
 
+Testing
+-------
+
+Install test dependencies
+```console
+$ pip install .'[test]'
+```
+
+Run unit tests
+```console
+$ pytest
+```
+
+Run the linter
+```console
+$ ruff check .
+```
+
+To run the tests against every supported Python version you can install and use [tox](https://tox.wiki/):
+
+```console
+$ pip install tox
+$ tox
+```
 
 License
 -------
@@ -69,13 +98,11 @@ Acknowledgements
 
 The edtf-validate was developed at the UNT Libraries and has been worked on by a number of developers over the years including:
 
-[Joey Liechty](https://github.com/yeahdef)
+* [Joey Liechty](https://github.com/yeahdef)
+* [Lauren Ko](https://github.com/ldko) 
+* [Mark Phillips](https://github.com/vphill)
+* [Gio Gottardi](https://github.com/somexpert)
+* [Madhulika Bayyavarapu](https://github.com/madhulika95b)
+* [Trey Clark](https://github.com/clarktr1)
 
-[Lauren Ko](https://github.com/ldko) 
-
-[Mark Phillips](https://github.com/vphill)
-
-[Gio Gottardi](https://github.com/somexpert)
-
-[Madhulika Bayyavarapu](https://github.com/madhulika95b)
 If you have questions about the project feel free to contact Mark Phillips at mark.phillips@unt.edu.

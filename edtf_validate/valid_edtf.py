@@ -6,8 +6,6 @@ given input complies with extended date time format level 0, 1, and 2
 Information about the extended date time format standard can be found here:
 https://www.loc.gov/standards/datetime/edtf.html
 """
-from __future__ import print_function
-
 import argparse
 import calendar
 import datetime
@@ -505,7 +503,7 @@ def is_valid_interval(edtf_candidate):
                 from_date = datetime.datetime.strptime(parts[0], "%Y")
         if parts[1].count("-") == 0:
             # when the to_date is open and the from_date is valid, it's valid
-            if not parts[1] in [Empty(), '..']:
+            if parts[1] not in [Empty(), '..']:
                 to_date = datetime.datetime.strptime(parts[1], "%Y")
         # if it starts negative and ends positive, that's always True
         if start == 'neg' and end == 'pos':
